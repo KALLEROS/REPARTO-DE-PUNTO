@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Punto">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Reparto de Punto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap">
+<style>
+  html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body { margin: 0; font-size: 14px; }
+  [hidden] { display: none !important; }
+  /* Layout: panel de porcentajes + resumen de totales arriba, lista de meseros en tarjetas abajo.
+     Paleta cantina: crema cálida / madera, acento tequila ámbar y vino de despecho. */
+  :root {
+    --bg: #f3ece0;
+    --surface: #fbf6ec;
+    --surface-2: #f0e7d6;
+    --fg: #2b211a;
+    --muted: #8a7a66;
+    --line: #e0d4bf;
+    --line-strong: #cdbda0;
+    --accent: #b5491f;      /* vino / despecho */
+    --accent-soft: #f4e2d6;
+    --gold: #b7822e;        /* tequila */
+    --gold-soft: #f6ecd6;
+    --good: #4f7a3a;
+    --shadow: 0 1px 2px rgba(43,33,26,.06), 0 8px 24px rgba(43,33,26,.06);
+    --radius: 14px;
+    --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+    --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17120e;
+      --surface: #211a14;
+      --surface-2: #2a2019;
+      --fg: #f2e9dc;
+      --muted: #a8977f;
+      --line: #342a20;
+      --line-strong: #463829;
+      --accent: #e5764a;
+      --accent-soft: #3a241a;
+      --gold: #d8a44e;
+      --gold-soft: #2f2616;
+      --good: #8bbf6a;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17120e;
+    --surface: #211a14;
+    --surface-2: #2a2019;
+    --fg: #f2e9dc;
+    --muted: #a8977f;
+    --line: #342a20;
+    --line-strong: #463829;
+    --accent: #e5764a;
+    --accent-soft: #3a241a;
+    --gold: #d8a44e;
+    --gold-soft: #2f2616;
+    --good: #8bbf6a;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding-block: 28px 64px;
+    padding-inline: 16px;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* Header */
+  header { margin-bottom: 22px; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin: 0 0 6px;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 600; font-size: clamp(28px, 6vw, 40px);
+    line-height: 1.05; margin: 0; text-wrap: balance;
+    font-optical-sizing: auto;
+  }
+  .sub { color: var(--muted); margin: 8px 0 0; font-size: 14px; max-width: 60ch; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .section-title {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; margin: 30px 0 12px;
+  }
+  .section-title h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 19px; margin: 0;
+  }
+  .section-title .hint { color: var(--muted); font-size: 13px; }
+
+  /* Config porcentajes */
+  .config { padding: 16px; }
+  .pcts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  .pct-field {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 10px; padding: 10px 12px;
+  }
+  .pct-field label {
+    display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; margin-bottom: 4px;
+  }
+  .pct-input-row { display: flex; align-items: baseline; gap: 4px; }
+  .pct-input-row input {
+    width: 100%; border: none; background: transparent; color: var(--fg);
+    font-size: 20px; font-weight: 600; font-family: var(--font-body);
+    font-variant-numeric: tabular-nums; padding: 0; min-width: 0;
+  }
+  .pct-input-row input:focus { outline: none; }
+  .pct-field:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+  .pct-input-row .unit { color: var(--muted); font-weight: 600; font-size: 15px; }
+
+  .sum-note {
+    margin-top: 12px; font-size: 13px; display: flex; align-items: center;
+    gap: 8px; flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px; border-radius: 999px; font-weight: 600; font-size: 12.5px;
+  }
+  .badge.ok { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
+  .badge.warn { background: var(--accent-soft); color: var(--accent); }
+  .sum-note .muted { color: var(--muted); }
+
+  /* Resumen */
+  .summary {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px;
+  }
+  .stat { padding: 14px 16px; }
+  .stat .k { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .stat .v { font-family: var(--font-display); font-size: clamp(22px, 5vw, 30px); font-weight: 600; margin-top: 2px; }
+  .stat.accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .stat.accent .k { color: rgba(255,255,255,.8); }
+  .areas-summary {
+    margin-top: 10px; padding: 14px 16px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: 12px;
+  }
+  .area-sum { }
+  .area-sum .k { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .area-sum .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); display: inline-block; flex: none; }
+  .area-sum .v { font-size: 17px; font-weight: 600; margin-top: 2px; }
+  .area-sum .p { font-size: 12px; color: var(--muted); }
+
+  /* Lista meseros */
+  .mesero {
+    padding: 14px 16px; margin-top: 12px;
+  }
+  .mesero-head {
+    display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end;
+  }
+  .in-group { min-width: 0; }
+  .in-group label {
+    display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; margin-bottom: 4px;
+  }
+  .in-group input {
+    width: 100%; border: 1px solid var(--line); background: var(--surface-2);
+    color: var(--fg); border-radius: 10px; padding: 9px 11px; font-size: 16px;
+    font-family: var(--font-body); min-width: 0;
+  }
+  .in-group input.venta { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .in-group input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+  .venta-wrap { position: relative; }
+  .venta-wrap .peso { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-weight: 600; pointer-events: none; }
+  .venta-wrap input { padding-left: 24px; }
+
+  .btn-del {
+    border: 1px solid var(--line); background: var(--surface); color: var(--muted);
+    border-radius: 10px; width: 40px; height: 40px; font-size: 18px; cursor: pointer;
+    flex: none; line-height: 1; display: grid; place-items: center;
+  }
+  .btn-del:hover { color: var(--accent); border-color: var(--accent); }
+
+  .mesero-punto {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+    margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line-strong);
+    flex-wrap: wrap;
+  }
+  .mesero-punto .lbl { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .mesero-punto .amt { font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--accent); }
+
+  .breakdown {
+    margin-top: 12px; display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px;
+  }
+  .b-item {
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 9px 11px;
+  }
+  .b-item .bk { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; display: flex; align-items: center; gap: 5px; }
+  .b-item .bk .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); flex: none; }
+  .b-item .bv { font-size: 15px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .b-item .bp { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+  .btn {
+    border-radius: 10px; padding: 11px 18px; font-size: 15px; font-weight: 600;
+    font-family: var(--font-body); cursor: pointer; border: 1px solid var(--line);
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { filter: brightness(1.05); }
+  .btn.ghost { background: var(--surface); color: var(--fg); }
+  .btn.ghost:hover { border-color: var(--gold); }
+  .btn.gold { background: var(--gold); border-color: var(--gold); color: #fff; }
+  .btn.gold:hover { filter: brightness(1.05); }
+
+  .foot { color: var(--muted); font-size: 12.5px; margin-top: 26px; text-align: center; }
+  .foot b { color: var(--fg); font-weight: 600; }
+
+  @media (max-width: 480px) {
+    .summary { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Sala de Despecho · Cierre</p>
+    <h1>Reparto de Punto</h1>
+    <p class="sub">Captura la venta de cada mesero y la herramienta calcula el punto total y cuánto le toca a cada área. Se guarda solo en este dispositivo.</p>
+  </header>
+
+  <!-- Config porcentajes -->
+  <div class="section-title">
+    <h2>Porcentajes por área</h2>
+    <span class="hint">% sobre la venta de cada mesero</span>
+  </div>
+  <div class="card config">
+    <div class="pcts" id="pcts"></div>
+    <div class="sum-note" id="sumNote"></div>
+  </div>
+
+  <!-- Resumen -->
+  <div class="section-title">
+    <h2>Resumen del turno</h2>
+    <span class="hint" id="countHint"></span>
+  </div>
+  <div class="summary">
+    <div class="card stat">
+      <div class="k">Venta total</div>
+      <div class="v tnum" id="sumVenta">$0.00</div>
+    </div>
+    <div class="card stat accent">
+      <div class="k">Punto total <span id="puntoRateLbl"></span></div>
+      <div class="v tnum" id="sumPunto">$0.00</div>
+    </div>
+  </div>
+  <div class="card areas-summary" id="areasSummary"></div>
+
+  <!-- Lista meseros -->
+  <div class="section-title">
+    <h2>Meseros</h2>
+    <span class="hint">Punto por persona = suma de las áreas sobre su venta</span>
+  </div>
+  <div id="meseros"></div>
+
+  <div class="actions">
+    <button class="btn primary" id="addBtn">+ Agregar mesero</button>
+    <button class="btn gold" id="excelBtn">Copiar para Excel</button>
+    <button class="btn ghost" id="copyBtn">Copiar resumen</button>
+    <button class="btn ghost" id="resetBtn">Hacer corte (vaciar)</button>
+  </div>
+  <p class="foot" style="margin-top:12px;text-align:left">
+    <b>Al cierre:</b> toca <b>Copiar para Excel</b>, abre <b>Cortes/venta del dia.xlsx</b>, haz clic en la primera celda vacía de la columna <b>Fecha</b> y pega (Ctrl+V). Al final usa <b>Hacer corte (vaciar)</b> para dejar la lista lista para el día siguiente.
+  </p>
+
+  <p class="foot">El <b>punto total</b> es la suma de lo que se reparte a las 5 áreas (<b>9.5%</b> de la venta). Si esa suma cambia, la herramienta te lo marca para que revises los porcentajes.</p>
+</div>
+
+<script>
+  var MXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function money(n){ return MXN.format(isFinite(n) ? n : 0); }
+  function parseNum(s){ if(s==null) return 0; var v = String(s).replace(/[^0-9.]/g,''); var n = parseFloat(v); return isFinite(n) ? n : 0; }
+
+  var LS_AREAS = 'sdd_areas_v1', LS_MESEROS = 'sdd_meseros_v1';
+
+  var defaultAreas = [
+    { id:'gerencia', name:'Gerencia', pct:4.3 },
+    { id:'cocina',   name:'Cocina',   pct:1.1 },
+    { id:'barra',    name:'Barra',    pct:1.7 },
+    { id:'host',     name:'Host',     pct:0.9 },
+    { id:'caja',     name:'CAJA',     pct:1.5 }
+  ];
+
+  function load(key, fallback){
+    try { var raw = localStorage.getItem(key); if(raw) return JSON.parse(raw); } catch(e){}
+    return fallback;
+  }
+  function save(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){} }
+
+  var areas = load(LS_AREAS, null);
+  if(!areas || !Array.isArray(areas) || areas.length !== 5){ areas = JSON.parse(JSON.stringify(defaultAreas)); }
+
+  var meseros = load(LS_MESEROS, null);
+  if(!meseros || !Array.isArray(meseros)){
+    // Estado inicial de ejemplo (editable): incluye el caso del sábado.
+    meseros = [
+      { name:'Ejemplo (sábado)', venta:'49563' },
+      { name:'', venta:'' }
+    ];
+  }
+
+  var PUNTO_RATE = 0.10;
+
+  // ---- Render porcentajes ----
+  var pctsEl = document.getElementById('pcts');
+  function renderPcts(){
+    pctsEl.innerHTML = '';
+    areas.forEach(function(a, i){
+      var f = document.createElement('div');
+      f.className = 'pct-field';
+      f.innerHTML =
+        '<label>'+a.name+'</label>'+
+        '<div class="pct-input-row">'+
+          '<input type="text" inputmode="decimal" data-pct="'+i+'" value="'+a.pct+'" aria-label="Porcentaje '+a.name+'">'+
+          '<span class="unit">%</span>'+
+        '</div>';
+      pctsEl.appendChild(f);
+    });
+    pctsEl.querySelectorAll('input[data-pct]').forEach(function(inp){
+      inp.addEventListener('input', function(){
+        var i = +inp.getAttribute('data-pct');
+        areas[i].pct = parseNum(inp.value);
+        save(LS_AREAS, areas);
+        recalc();
+      });
+    });
+  }
+
+  // ---- Render meseros ----
+  var meserosEl = document.getElementById('meseros');
+  function renderMeseros(){
+    meserosEl.innerHTML = '';
+    meseros.forEach(function(m, idx){
+      var card = document.createElement('div');
+      card.className = 'card mesero';
+      card.setAttribute('data-row', idx);
+
+      var breakdownHtml = areas.map(function(a){
+        return '<div class="b-item" data-area="'+a.id+'">'+
+          '<div class="bk"><span class="dot"></span>'+a.name+'</div>'+
+          '<div class="bv" data-bv></div>'+
+          '<div class="bp" data-bp></div>'+
+        '</div>';
+      }).join('');
+
+      card.innerHTML =
+        '<div class="mesero-head">'+
+          '<div class="in-group">'+
+            '<label>Mesero</label>'+
+            '<input type="text" data-name value="'+escapeAttr(m.name)+'" placeholder="Nombre del mesero">'+
+          '</div>'+
+          '<button class="btn-del" title="Quitar" data-del aria-label="Quitar mesero">&times;</button>'+
+        '</div>'+
+        '<div class="in-group venta-wrap" style="margin-top:10px">'+
+          '<label>Venta de punto del día</label>'+
+          '<span class="peso">$</span>'+
+          '<input class="venta" type="text" inputmode="decimal" data-venta value="'+escapeAttr(m.venta)+'" placeholder="0.00">'+
+        '</div>'+
+        '<div class="mesero-punto">'+
+          '<span class="lbl">Punto a dejar <span class="rate"></span></span>'+
+          '<span class="amt tnum" data-punto>$0.00</span>'+
+        '</div>'+
+        '<div class="breakdown">'+breakdownHtml+'</div>';
+
+      meserosEl.appendChild(card);
+
+      var nameInp = card.querySelector('[data-name]');
+      var ventaInp = card.querySelector('[data-venta]');
+      nameInp.addEventListener('input', function(){ meseros[idx].name = nameInp.value; save(LS_MESEROS, meseros); });
+      ventaInp.addEventListener('input', function(){ meseros[idx].venta = ventaInp.value; save(LS_MESEROS, meseros); recalc(); });
+      card.querySelector('[data-del]').addEventListener('click', function(){
+        meseros.splice(idx, 1);
+        if(meseros.length === 0) meseros.push({name:'', venta:''});
+        save(LS_MESEROS, meseros);
+        renderMeseros(); recalc();
+      });
+    });
+  }
+
+  function escapeAttr(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+  // ---- Cálculo ----
+  function sumPct(){ return areas.reduce(function(acc,a){ return acc + a.pct; }, 0); }
+
+  function recalc(){
+    var totalPct = sumPct();
+    var totalPctR = Math.round(totalPct*100)/100;
+    var rateLbl = '(' + totalPctR + '%)';
+    var totalVenta = 0, totalPunto = 0;
+    var areaTotals = {}; areas.forEach(function(a){ areaTotals[a.id] = 0; });
+
+    var cards = meserosEl.querySelectorAll('.mesero');
+    cards.forEach(function(card, idx){
+      var venta = parseNum(meseros[idx] ? meseros[idx].venta : 0);
+      var punto = venta * (totalPct/100);
+      totalVenta += venta; totalPunto += punto;
+      card.querySelector('[data-punto]').textContent = money(punto);
+      var rateEl = card.querySelector('.rate'); if(rateEl) rateEl.textContent = rateLbl;
+
+      var items = card.querySelectorAll('.b-item');
+      items.forEach(function(item){
+        var id = item.getAttribute('data-area');
+        var a = areas.find(function(x){ return x.id === id; });
+        var amt = venta * (a.pct/100);
+        areaTotals[id] += amt;
+        item.querySelector('[data-bv]').textContent = money(amt);
+        item.querySelector('[data-bp]').textContent = a.pct + '%';
+      });
+    });
+
+    document.getElementById('sumVenta').textContent = money(totalVenta);
+    document.getElementById('sumPunto').textContent = money(totalPunto);
+    document.getElementById('puntoRateLbl').textContent = rateLbl;
+
+    // Resumen por área
+    var as = document.getElementById('areasSummary');
+    as.innerHTML = areas.map(function(a){
+      return '<div class="area-sum">'+
+        '<div class="k"><span class="dot"></span>'+a.name+' <span style="color:var(--muted);font-weight:600">· '+a.pct+'%</span></div>'+
+        '<div class="v tnum">'+money(areaTotals[a.id])+'</div>'+
+      '</div>';
+    }).join('');
+
+    // Contador
+    var n = meseros.filter(function(m){ return parseNum(m.venta) > 0; }).length;
+    document.getElementById('countHint').textContent = n + (n===1 ? ' mesero con venta' : ' meseros con venta');
+
+    // Suma de porcentajes = punto efectivo (esperado 9.5%)
+    var EXPECTED = 9.5;
+    var note = document.getElementById('sumNote');
+    var ok = Math.abs(totalPctR - EXPECTED) < 0.001;
+    note.innerHTML =
+      '<span class="badge '+(ok?'ok':'warn')+'">Punto: '+totalPctR+'% de la venta</span>'+
+      (ok
+        ? '<span class="muted">Suma de las 5 áreas (Gerencia, Cocina, Barra, Host, CAJA).</span>'
+        : '<span class="muted">Ojo: la suma de las 5 áreas debería dar '+EXPECTED+'%. Revisa los porcentajes.</span>');
+  }
+
+  // ---- Botones ----
+  document.getElementById('addBtn').addEventListener('click', function(){
+    meseros.push({ name:'', venta:'' });
+    save(LS_MESEROS, meseros);
+    renderMeseros(); recalc();
+    var inputs = meserosEl.querySelectorAll('.mesero [data-name]');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  });
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    meseros = [{ name:'', venta:'' }];
+    save(LS_MESEROS, meseros);
+    renderMeseros(); recalc();
+  });
+
+  // ---- Copiar resumen ----
+  function fechaCorta(){ return new Date().toLocaleDateString('es-MX'); }
+  function n2(x){ return (Math.round((isFinite(x)?x:0)*100)/100).toFixed(2); }
+
+  function buildResumen(){
+    var totalPct = sumPct();
+    var totalVenta = 0, totalPunto = 0;
+    var areaTotals = {}; areas.forEach(function(a){ areaTotals[a.id] = 0; });
+    var lineas = [];
+    meseros.forEach(function(m){
+      var venta = parseNum(m.venta);
+      if(venta <= 0) return;
+      var punto = venta * (totalPct/100);
+      totalVenta += venta; totalPunto += punto;
+      areas.forEach(function(a){ areaTotals[a.id] += venta * (a.pct/100); });
+      var nombre = (m.name && m.name.trim()) ? m.name.trim() : 'Mesero';
+      lineas.push('• ' + nombre + ' — venta ' + money(venta) + ' → punto ' + money(punto));
+    });
+
+    var fecha = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    var out = [];
+    out.push('SALA DE DESPECHO — Reparto de punto');
+    out.push(fecha);
+    out.push('');
+    out.push('Venta total: ' + money(totalVenta));
+    out.push('Punto total (' + (Math.round(totalPct*100)/100) + '%): ' + money(totalPunto));
+    out.push('');
+    out.push('POR ÁREA:');
+    areas.forEach(function(a){
+      out.push('• ' + a.name + ' (' + a.pct + '%): ' + money(areaTotals[a.id]));
+    });
+    if(lineas.length){
+      out.push('');
+      out.push('POR MESERO:');
+      lineas.forEach(function(l){ out.push(l); });
+    }
+    return out.join('\n');
+  }
+
+  // Tabla para pegar en Excel (columnas: Fecha, Mesero, Venta, Punto, Gerencia, Cocina, Barra, Host, CAJA)
+  function buildExcelTSV(){
+    var totalPct = sumPct();
+    var fecha = fechaCorta();
+    var rows = [];
+    var tVenta=0, tPunto=0, tArea={}; areas.forEach(function(a){ tArea[a.id]=0; });
+    meseros.forEach(function(m){
+      var venta = parseNum(m.venta);
+      if(venta <= 0) return;
+      var punto = venta * (totalPct/100);
+      tVenta += venta; tPunto += punto;
+      var cols = [ fecha, (m.name && m.name.trim()) ? m.name.trim() : 'Mesero', n2(venta), n2(punto) ];
+      areas.forEach(function(a){ var amt = venta*(a.pct/100); tArea[a.id]+=amt; cols.push(n2(amt)); });
+      rows.push(cols.join('\t'));
+    });
+    // Fila de total del día
+    var totalCols = [ fecha, 'TOTAL DEL DÍA', n2(tVenta), n2(tPunto) ];
+    areas.forEach(function(a){ totalCols.push(n2(tArea[a.id])); });
+    rows.push(totalCols.join('\t'));
+    return rows.join('\n');
+  }
+
+  function copyToClipboard(texto, btn, okLabel){
+    var prev = btn.textContent;
+    var flash = function(msg, ms){ btn.textContent = msg; setTimeout(function(){ btn.textContent = prev; }, ms||1600); };
+    var done = function(){ flash(okLabel || '¡Copiado!'); };
+    var fail = function(){
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = texto; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta); done();
+      } catch(e){ flash('No se pudo copiar', 2000); }
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(texto).then(done, fail);
+    } else { fail(); }
+  }
+
+  document.getElementById('copyBtn').addEventListener('click', function(){
+    copyToClipboard(buildResumen(), this, '¡Resumen copiado!');
+  });
+  document.getElementById('excelBtn').addEventListener('click', function(){
+    copyToClipboard(buildExcelTSV(), this, '¡Listo! Pega en Excel');
+  });
+
+  renderPcts();
+  renderMeseros();
+  recalc();
+</script>
