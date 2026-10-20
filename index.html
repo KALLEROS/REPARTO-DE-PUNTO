@@ -7,7 +7,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Punto">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#b5491f">
 <title>Reparto de Punto</title>
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap">
@@ -286,6 +290,7 @@
 
   <div class="actions">
     <button class="btn primary" id="addBtn">+ Agregar mesero</button>
+    <button class="btn gold" id="shareBtn" hidden>Enviar resumen</button>
     <button class="btn gold" id="excelBtn">Copiar para Excel</button>
     <button class="btn ghost" id="copyBtn">Copiar resumen</button>
     <button class="btn ghost" id="resetBtn">Hacer corte (vaciar)</button>
@@ -476,6 +481,7 @@
     if(inputs.length) inputs[inputs.length-1].focus();
   });
   document.getElementById('resetBtn').addEventListener('click', function(){
+    if(!confirm('¿Hacer el corte? Se borran los meseros y ventas de hoy. Copia o envía el resumen antes.')) return;
     meseros = [{ name:'', venta:'' }];
     save(LS_MESEROS, meseros);
     renderMeseros(); recalc();
@@ -565,6 +571,19 @@
   document.getElementById('excelBtn').addEventListener('click', function(){
     copyToClipboard(buildExcelTSV(), this, '¡Listo! Pega en Excel');
   });
+
+  // En el iPhone: abre el menú de compartir (WhatsApp, Notas, etc.) con el resumen del turno.
+  var shareBtn = document.getElementById('shareBtn');
+  if(navigator.share){
+    shareBtn.hidden = false;
+    shareBtn.addEventListener('click', function(){
+      navigator.share({ title: 'Reparto de punto', text: buildResumen() }).catch(function(){});
+    });
+  }
+
+  if('serviceWorker' in navigator && location.protocol === 'https:'){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  }
 
   renderPcts();
   renderMeseros();
