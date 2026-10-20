@@ -245,6 +245,27 @@
   @media (max-width: 480px) {
     .summary { grid-template-columns: 1fr; }
   }
+
+  /* Instalar como app */
+  .install { display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin-top: 18px; }
+  .install .ico { width: 44px; height: 44px; border-radius: 10px; flex: none; }
+  .install .txt { flex: 1; min-width: 0; font-size: 13px; color: var(--muted); line-height: 1.35; }
+  .install .txt b { display: block; font-size: 15px; color: var(--fg); }
+  .install .btn { padding: 9px 14px; font-size: 14px; flex: none; }
+  .install .x { background: none; border: none; color: var(--muted); font-size: 22px; line-height: 1; cursor: pointer; padding: 4px; flex: none; }
+  .sheet-backdrop {
+    position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.45);
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+  .sheet {
+    background: var(--surface); color: var(--fg); width: 100%; max-width: 480px;
+    border-radius: 18px 18px 0 0; box-shadow: var(--shadow);
+    padding: 22px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+  .sheet h3 { font-family: var(--font-display); font-weight: 600; font-size: 21px; margin: 0 0 14px; }
+  .sheet ol { margin: 0; padding-left: 22px; display: grid; gap: 12px; font-size: 15px; }
+  .sheet .share-ico { width: 18px; height: 18px; vertical-align: -3px; color: var(--accent); }
+  .sheet .note { color: var(--muted); font-size: 13px; margin: 14px 0 0; }
 </style>
 
 <div class="wrap">
@@ -252,7 +273,26 @@
     <p class="eyebrow">Sala de Despecho · Cierre</p>
     <h1>Reparto de Punto</h1>
     <p class="sub">Captura la venta de cada mesero y la herramienta calcula el punto total y cuánto le toca a cada área. Se guarda solo en este dispositivo.</p>
+    <div class="card install" id="installBar" hidden>
+      <img class="ico" src="icon-180.png" alt="">
+      <div class="txt"><b>Instala la app</b>Ábrela desde tu pantalla de inicio, aunque no haya señal.</div>
+      <button class="btn primary" id="installBtn">Instalar</button>
+      <button class="x" id="installClose" aria-label="Ahora no">&times;</button>
+    </div>
   </header>
+
+  <div class="sheet-backdrop" id="iosSheet" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="iosTitle">
+      <h3 id="iosTitle">Instalar en tu iPhone</h3>
+      <ol>
+        <li>Toca <b>Compartir</b> <svg class="share-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg> en la barra de Safari (si no lo ves, toca <b>•••</b> y luego <b>Compartir</b>).</li>
+        <li>Desliza hacia abajo y elige <b>Agregar a inicio</b>.</li>
+        <li>Toca <b>Agregar</b>. Listo: abre <b>Punto</b> desde tu pantalla de inicio.</li>
+      </ol>
+      <p class="note">Tus datos se quedan en la app instalada. Si borras el ícono, se borra lo capturado.</p>
+      <button class="btn primary" id="iosOk" style="width:100%;margin-top:18px">Entendido</button>
+    </div>
+  </div>
 
   <!-- Config porcentajes -->
   <div class="section-title">
@@ -580,6 +620,36 @@
       navigator.share({ title: 'Reparto de punto', text: buildResumen() }).catch(function(){});
     });
   }
+
+  // ---- Instalar como app ----
+  // Android/Chrome: usa el aviso nativo de instalación. iPhone: Safari no lo tiene, así que mostramos los pasos.
+  (function(){
+    var bar = document.getElementById('installBar');
+    var sheet = document.getElementById('iosSheet');
+    var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+    if(standalone) return;
+    var LS_HIDE = 'sdd_install_hide_until';
+    if(Date.now() < load(LS_HIDE, 0)) return;
+    var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var deferred = null;
+    if(isIOS) bar.hidden = false;
+    window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); deferred = e; bar.hidden = false; });
+    window.addEventListener('appinstalled', function(){ bar.hidden = true; });
+    document.getElementById('installBtn').addEventListener('click', function(){
+      if(deferred){
+        deferred.prompt();
+        deferred.userChoice.then(function(){ deferred = null; bar.hidden = true; });
+      } else {
+        sheet.hidden = false;
+      }
+    });
+    document.getElementById('installClose').addEventListener('click', function(){
+      save(LS_HIDE, Date.now() + 3*24*60*60*1000);
+      bar.hidden = true;
+    });
+    document.getElementById('iosOk').addEventListener('click', function(){ sheet.hidden = true; });
+    sheet.addEventListener('click', function(e){ if(e.target === sheet) sheet.hidden = true; });
+  })();
 
   if('serviceWorker' in navigator && location.protocol === 'https:'){
     navigator.serviceWorker.register('sw.js').catch(function(){});

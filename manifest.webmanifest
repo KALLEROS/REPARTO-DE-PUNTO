@@ -1,14 +1,18 @@
 {
+  "id": "./",
   "name": "Reparto de Punto · Sala de Despecho",
   "short_name": "Punto",
+  "description": "Calcula el punto de cada mesero y lo que le toca a cada área al cierre.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#f3ece0",
   "theme_color": "#b5491f",
   "lang": "es-MX",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
