@@ -13,11 +13,13 @@ Calculadora de cierre para meseros: captura la venta de cada mesero y calcula el
 
 ## Usarla en el iPhone
 
-1. Abre la app en Safari: https://kalleros.github.io/calleros/
+1. Abre la app en Safari: https://kalleros.github.io/REPARTO-DE-PUNTO/
 2. Toca **Compartir** (cuadro con flecha) → **Agregar a inicio**.
 
-Los datos que captures se guardan solo en tu teléfono.
+Los datos que captures se guardan solo en tu teléfono. Ya instalada, abre aunque no haya señal.
+
+Para mandar el corte: **Enviar resumen** abre el menú de compartir (WhatsApp, Notas, etc.).
 
 ## Descargar
 
-[Descargar index.html](https://github.com/KALLEROS/calleros/raw/main/index.html)
+[Descargar index.html](https://github.com/KALLEROS/REPARTO-DE-PUNTO/raw/main/index.html)
