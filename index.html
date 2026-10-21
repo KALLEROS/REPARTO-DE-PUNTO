@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Punto">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#b5491f">
+<meta name="theme-color" content="#26301a">
 <title>Reparto de Punto</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -20,56 +20,69 @@
   body { margin: 0; font-size: 14px; }
   [hidden] { display: none !important; }
   /* Layout: panel de porcentajes + resumen de totales arriba, lista de meseros en tarjetas abajo.
-     Paleta cantina: crema cálida / madera, acento tequila ámbar y vino de despecho. */
+     Paleta de marca Sala de Despecho: verde del letrero, letras blancas con borde rojo
+     y azul neón de "Las Vegas". */
   :root {
-    --bg: #f3ece0;
-    --surface: #fbf6ec;
-    --surface-2: #f0e7d6;
-    --fg: #2b211a;
-    --muted: #8a7a66;
-    --line: #e0d4bf;
-    --line-strong: #cdbda0;
-    --accent: #b5491f;      /* vino / despecho */
-    --accent-soft: #f4e2d6;
-    --gold: #b7822e;        /* tequila */
-    --gold-soft: #f6ecd6;
-    --good: #4f7a3a;
-    --shadow: 0 1px 2px rgba(43,33,26,.06), 0 8px 24px rgba(43,33,26,.06);
+    /* Colores de marca (fijos en ambos modos) */
+    --green: #26301a;       /* verde del letrero */
+    --red: #b5392a;         /* borde rojo de las letras */
+    --cream: #fdfbf1;       /* blanco de las letras */
+    --neon-glow: #92d8cf;   /* azul neón "Las Vegas" */
+
+    --bg: #f5f1e4;
+    --surface: #fffdf5;
+    --surface-2: #f0ecdc;
+    --fg: #1c2414;
+    --muted: #646b55;
+    --line: #e2ddca;
+    --line-strong: #cfc8ae;
+    --accent: #b5392a;      /* rojo para textos */
+    --accent-soft: #f6e0da;
+    --neon: #1c7a70;        /* azul neón oscurecido para que se lea sobre claro */
+    --neon-soft: #d9f1ed;
+    --btn2-bg: var(--green);
+    --btn2-fg: var(--cream);
+    --good: #3f7a2e;
+    --shadow: 0 1px 2px rgba(28,36,20,.06), 0 8px 24px rgba(28,36,20,.07);
     --radius: 14px;
     --font-display: "Fraunces", Georgia, "Times New Roman", serif;
     --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #17120e;
-      --surface: #211a14;
-      --surface-2: #2a2019;
-      --fg: #f2e9dc;
-      --muted: #a8977f;
-      --line: #342a20;
-      --line-strong: #463829;
-      --accent: #e5764a;
-      --accent-soft: #3a241a;
-      --gold: #d8a44e;
-      --gold-soft: #2f2616;
-      --good: #8bbf6a;
+      --bg: #12180c;
+      --surface: #1c2413;
+      --surface-2: #242e18;
+      --fg: #fdfbf1;
+      --muted: #a7ae95;
+      --line: #2f3a22;
+      --line-strong: #3d4a2d;
+      --accent: #e8664f;
+      --accent-soft: #3a1d16;
+      --neon: #92d8cf;
+      --neon-soft: #1f3a36;
+      --btn2-bg: #92d8cf;
+      --btn2-fg: #12180c;
+      --good: #9bd27a;
       --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
       color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #17120e;
-    --surface: #211a14;
-    --surface-2: #2a2019;
-    --fg: #f2e9dc;
-    --muted: #a8977f;
-    --line: #342a20;
-    --line-strong: #463829;
-    --accent: #e5764a;
-    --accent-soft: #3a241a;
-    --gold: #d8a44e;
-    --gold-soft: #2f2616;
-    --good: #8bbf6a;
+    --bg: #12180c;
+    --surface: #1c2413;
+    --surface-2: #242e18;
+    --fg: #fdfbf1;
+    --muted: #a7ae95;
+    --line: #2f3a22;
+    --line-strong: #3d4a2d;
+    --accent: #e8664f;
+    --accent-soft: #3a1d16;
+    --neon: #92d8cf;
+    --neon-soft: #1f3a36;
+    --btn2-bg: #92d8cf;
+    --btn2-fg: #12180c;
+    --good: #9bd27a;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
     color-scheme: dark;
   }
@@ -94,8 +107,25 @@
   header { margin-bottom: 22px; }
   .eyebrow {
     font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
-    color: var(--gold); font-weight: 600; margin: 0 0 6px;
+    color: var(--neon); font-weight: 600; margin: 0 0 6px;
   }
+
+  /* Encabezado como el letrero de la marca: fondo verde, letras blancas con borde rojo, azul neón */
+  .sign {
+    background-color: var(--green);
+    background-image: repeating-conic-gradient(from 0deg at 50% -20%, rgba(253,251,241,.045) 0deg 1.5deg, transparent 1.5deg 6deg);
+    color: var(--cream);
+    border: 2px solid rgba(253,251,241,.14);
+    border-radius: 20px;
+    padding: 20px 18px 18px;
+    box-shadow: var(--shadow);
+  }
+  .sign .eyebrow { color: var(--neon-glow); text-shadow: 0 0 10px rgba(146,216,207,.55); }
+  .sign h1 {
+    color: var(--cream); text-transform: uppercase; letter-spacing: .02em;
+    text-shadow: 1px 1px 0 var(--red), 2px 2px 0 var(--red), 3px 3px 0 var(--red);
+  }
+  .sign .sub { color: rgba(253,251,241,.8); }
   h1 {
     font-family: var(--font-display);
     font-weight: 600; font-size: clamp(28px, 6vw, 40px);
@@ -142,7 +172,7 @@
     font-variant-numeric: tabular-nums; padding: 0; min-width: 0;
   }
   .pct-input-row input:focus { outline: none; }
-  .pct-field:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+  .pct-field:focus-within { border-color: var(--neon); box-shadow: 0 0 0 3px var(--neon-soft); }
   .pct-input-row .unit { color: var(--muted); font-weight: 600; font-size: 15px; }
 
   .sum-note {
@@ -164,15 +194,15 @@
   .stat { padding: 14px 16px; }
   .stat .k { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
   .stat .v { font-family: var(--font-display); font-size: clamp(22px, 5vw, 30px); font-weight: 600; margin-top: 2px; }
-  .stat.accent { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .stat.accent .k { color: rgba(255,255,255,.8); }
+  .stat.accent { background: var(--red); border-color: var(--red); color: var(--cream); }
+  .stat.accent .k { color: rgba(253,251,241,.85); }
   .areas-summary {
     margin-top: 10px; padding: 14px 16px;
     display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: 12px;
   }
   .area-sum { }
   .area-sum .k { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; display: flex; align-items: center; gap: 6px; }
-  .area-sum .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); display: inline-block; flex: none; }
+  .area-sum .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--neon); display: inline-block; flex: none; }
   .area-sum .v { font-size: 17px; font-weight: 600; margin-top: 2px; }
   .area-sum .p { font-size: 12px; color: var(--muted); }
 
@@ -194,7 +224,7 @@
     font-family: var(--font-body); min-width: 0;
   }
   .in-group input.venta { font-variant-numeric: tabular-nums; font-weight: 600; }
-  .in-group input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+  .in-group input:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 0 3px var(--neon-soft); }
   .venta-wrap { position: relative; }
   .venta-wrap .peso { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-weight: 600; pointer-events: none; }
   .venta-wrap input { padding-left: 24px; }
@@ -223,7 +253,7 @@
     border-radius: 10px; padding: 9px 11px;
   }
   .b-item .bk { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; display: flex; align-items: center; gap: 5px; }
-  .b-item .bk .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); flex: none; }
+  .b-item .bk .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--neon); flex: none; }
   .b-item .bv { font-size: 15px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
   .b-item .bp { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
 
@@ -232,11 +262,11 @@
     border-radius: 10px; padding: 11px 18px; font-size: 15px; font-weight: 600;
     font-family: var(--font-body); cursor: pointer; border: 1px solid var(--line);
   }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary { background: var(--red); border-color: var(--red); color: var(--cream); }
   .btn.primary:hover { filter: brightness(1.05); }
   .btn.ghost { background: var(--surface); color: var(--fg); }
-  .btn.ghost:hover { border-color: var(--gold); }
-  .btn.gold { background: var(--gold); border-color: var(--gold); color: #fff; }
+  .btn.ghost:hover { border-color: var(--neon); }
+  .btn.gold { background: var(--btn2-bg); border-color: var(--btn2-bg); color: var(--btn2-fg); }
   .btn.gold:hover { filter: brightness(1.05); }
 
   .foot { color: var(--muted); font-size: 12.5px; margin-top: 26px; text-align: center; }
@@ -270,9 +300,11 @@
 
 <div class="wrap">
   <header>
-    <p class="eyebrow">Sala de Despecho · Cierre</p>
-    <h1>Reparto de Punto</h1>
-    <p class="sub">Captura la venta de cada mesero y la herramienta calcula el punto total y cuánto le toca a cada área. Se guarda solo en este dispositivo.</p>
+    <div class="sign">
+      <p class="eyebrow">Sala de Despecho · Cierre</p>
+      <h1>Reparto de Punto</h1>
+      <p class="sub">Captura la venta de cada mesero y la herramienta calcula el punto total y cuánto le toca a cada área. Se guarda solo en este dispositivo.</p>
+    </div>
     <div class="card install" id="installBar" hidden>
       <img class="ico" src="icon-180.png" alt="">
       <div class="txt"><b>Instala la app</b>Ábrela desde tu pantalla de inicio, aunque no haya señal.</div>
