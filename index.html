@@ -20,7 +20,7 @@
   body { margin: 0; font-size: 14px; }
   [hidden] { display: none !important; }
   /* Layout: panel de porcentajes + resumen de totales arriba, lista de meseros en tarjetas abajo.
-     Paleta cantina: crema cálida / madera, acento tequila ámbar y vino de despecho. */
+     Paleta: crema cálida / madera, acento tequila ámbar y vino. */
   :root {
     --bg: #f3ece0;
     --surface: #fbf6ec;
@@ -29,7 +29,7 @@
     --muted: #8a7a66;
     --line: #e0d4bf;
     --line-strong: #cdbda0;
-    --accent: #b5491f;      /* vino / despecho */
+    --accent: #b5491f;      /* vino */
     --accent-soft: #f4e2d6;
     --gold: #b7822e;        /* tequila */
     --gold-soft: #f6ecd6;
@@ -270,7 +270,7 @@
 
 <div class="wrap">
   <header>
-    <p class="eyebrow">Sala de Despecho · Cierre</p>
+    <p class="eyebrow">Cierre de turno</p>
     <h1>Reparto de Punto</h1>
     <p class="sub">Captura la venta de cada mesero y la herramienta calcula el punto total y cuánto le toca a cada área. Se guarda solo en este dispositivo.</p>
     <div class="card install" id="installBar" hidden>
@@ -548,7 +548,7 @@
 
     var fecha = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
     var out = [];
-    out.push('SALA DE DESPECHO — Reparto de punto');
+    out.push('REPARTO DE PUNTO');
     out.push(fecha);
     out.push('');
     out.push('Venta total: ' + money(totalVenta));

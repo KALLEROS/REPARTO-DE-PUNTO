@@ -1,6 +1,6 @@
 {
   "id": "./",
-  "name": "Reparto de Punto · Sala de Despecho",
+  "name": "Reparto de Punto",
   "short_name": "Punto",
   "description": "Calcula el punto de cada mesero y lo que le toca a cada área al cierre.",
   "start_url": "./",

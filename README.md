@@ -1,4 +1,4 @@
-# Reparto de Punto · Sala de Despecho
+# Reparto de Punto
 
 Calculadora de cierre para meseros: captura la venta de cada mesero y calcula el punto (9.5% de la venta) y lo que le toca a cada área.
 

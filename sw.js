@@ -1,6 +1,6 @@
 // Guarda la app en el teléfono para que abra aunque no haya señal en el bar.
 // Primero intenta la red (para recibir actualizaciones) y si falla usa la copia guardada.
-var CACHE = 'punto-v3';
+var CACHE = 'punto-v4';
 var FILES = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function(e){
