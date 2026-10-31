@@ -392,8 +392,8 @@
       <div class="sheet-wrap" id="sheet" hidden>
         <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
           <div class="box">
-            <div class="msg"><b id="sheetTitle">¿Hacer corte del día?</b>Se borrarán los meseros y ventas capturados. Los porcentajes se quedan igual.</div>
-            <button class="destroy" id="sheetOk">Hacer corte</button>
+            <div class="msg"><b id="sheetTitle"></b><span id="sheetMsg"></span></div>
+            <button id="sheetOk"></button>
           </div>
           <button class="cancel" id="sheetCancel">Cancelar</button>
         </div>
@@ -528,10 +528,20 @@
       ventaInp.addEventListener('focus', function(){ ventaInp.value = rawVenta(meseros[idx].venta); });
       ventaInp.addEventListener('blur', function(){ ventaInp.value = fmtVenta(meseros[idx].venta); });
       wrap.querySelector('[data-del]').addEventListener('click', function(){
-        meseros.splice(idx, 1);
-        if(meseros.length === 0) meseros.push({name:'', venta:''});
-        save(LS_MESEROS, meseros);
-        renderMeseros(); recalc();
+        var m = meseros[idx], venta = parseNum(m.venta), nombre = (m.name || '').trim();
+        var quitar = function(){
+          meseros.splice(idx, 1);
+          if(meseros.length === 0) meseros.push({name:'', venta:''});
+          save(LS_MESEROS, meseros);
+          renderMeseros(); recalc();
+        };
+        // Un renglón vacío no tiene nada que perder: se quita sin preguntar.
+        if(!venta && !nombre) return quitar();
+        askSheet({
+          title: '¿Quitar a ' + (nombre || 'Mesero ' + (idx+1)) + '?',
+          msg: venta > 0 ? 'Se borrará su venta de ' + money(venta) + '. No se puede deshacer.' : 'Se quitará de la lista. No se puede deshacer.',
+          ok: 'Quitar mesero', destroy: true, onOk: quitar
+        });
       });
     });
   }
@@ -651,16 +661,38 @@
     if(inputs.length) inputs[inputs.length-1].focus();
   });
 
+  // ---- Hoja de confirmación (corte, quitar mesero…) ----
   var sheet = document.getElementById('sheet');
-  document.getElementById('resetBtn').addEventListener('click', function(){ sheet.hidden = false; document.getElementById('sheetCancel').focus(); });
-  document.getElementById('sheetCancel').addEventListener('click', function(){ sheet.hidden = true; });
-  sheet.addEventListener('click', function(e){ if(e.target === sheet) sheet.hidden = true; });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') sheet.hidden = true; });
-  document.getElementById('sheetOk').addEventListener('click', function(){
-    meseros = [{ name:'', venta:'' }];
-    save(LS_MESEROS, meseros);
-    renderMeseros(); recalc();
-    sheet.hidden = true;
+  var sheetOk = document.getElementById('sheetOk'), sheetCancel = document.getElementById('sheetCancel');
+  var sheetAction = null;
+  // o: { title, msg, ok, destroy, cancel, onOk }
+  function askSheet(o){
+    document.getElementById('sheetTitle').textContent = o.title;
+    document.getElementById('sheetMsg').textContent = o.msg;
+    sheetOk.textContent = o.ok;
+    sheetOk.classList.toggle('destroy', !!o.destroy);
+    sheetCancel.textContent = o.cancel || 'Cancelar';
+    sheetAction = o.onOk;
+    sheet.hidden = false;
+    sheetCancel.focus();
+  }
+  function closeSheet(){ sheet.hidden = true; sheetAction = null; }
+  sheetCancel.addEventListener('click', closeSheet);
+  sheet.addEventListener('click', function(e){ if(e.target === sheet) closeSheet(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !sheet.hidden) closeSheet(); });
+  sheetOk.addEventListener('click', function(){ var fn = sheetAction; closeSheet(); if(fn) fn(); });
+
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    askSheet({
+      title: '¿Hacer corte del día?',
+      msg: 'Se borrarán los meseros y ventas capturados. Los porcentajes se quedan igual.',
+      ok: 'Hacer corte', destroy: true,
+      onOk: function(){
+        meseros = [{ name:'', venta:'' }];
+        save(LS_MESEROS, meseros);
+        renderMeseros(); recalc();
+      }
+    });
   });
 
   // ---- Copiar ----
