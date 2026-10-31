@@ -2,75 +2,77 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Punto">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#b5491f">
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <title>Reparto de Punto</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap">
 <style>
-  html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
-  body { margin: 0; font-size: 14px; }
-  [hidden] { display: none !important; }
-  /* Layout: panel de porcentajes + resumen de totales arriba, lista de meseros en tarjetas abajo.
-     Paleta: crema cálida / madera, acento tequila ámbar y vino. */
+  /* Layout: app con estilo de iPhone (listas agrupadas, título grande, barra translúcida).
+     En el celular ocupa toda la pantalla; instalada desde Safari abre como app. */
   :root {
-    --bg: #f3ece0;
-    --surface: #fbf6ec;
-    --surface-2: #f0e7d6;
-    --fg: #2b211a;
-    --muted: #8a7a66;
-    --line: #e0d4bf;
-    --line-strong: #cdbda0;
-    --accent: #b5491f;      /* vino */
-    --accent-soft: #f4e2d6;
-    --gold: #b7822e;        /* tequila */
-    --gold-soft: #f6ecd6;
-    --good: #4f7a3a;
-    --shadow: 0 1px 2px rgba(43,33,26,.06), 0 8px 24px rgba(43,33,26,.06);
-    --radius: 14px;
-    --font-display: "Fraunces", Georgia, "Times New Roman", serif;
-    --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bg: #f2f2f7;
+    --surface: #ffffff;
+    --fill: #e9e9ee;
+    --fg: #1c1c1e;
+    --muted: #6c6c70;
+    --sep: #dcdce0;
+    --tint: #b8421a;
+    --tint-soft: #f9e6dd;
+    --on-tint: #ffffff;
+    --good: #1f7a35;
+    --good-soft: #e1f2e5;
+    --danger: #d70015;
+    --bar: rgba(242, 242, 247, .82);
+    --scrim: rgba(0, 0, 0, .35);
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-round: ui-rounded, -apple-system, "SF Pro Rounded", system-ui, "Segoe UI", sans-serif;
+    --ease: cubic-bezier(.22, 1, .36, 1);
+    --ic-green: #1f8f4e;
+    --ic-blue: #0a7cf0;
+    --ic-gray: #7c7c82;
+    --ic-red: #e5302a;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #17120e;
-      --surface: #211a14;
-      --surface-2: #2a2019;
-      --fg: #f2e9dc;
-      --muted: #a8977f;
-      --line: #342a20;
-      --line-strong: #463829;
-      --accent: #e5764a;
-      --accent-soft: #3a241a;
-      --gold: #d8a44e;
-      --gold-soft: #2f2616;
-      --good: #8bbf6a;
-      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+      --bg: #000000;
+      --surface: #1c1c1e;
+      --fill: #2c2c2e;
+      --fg: #ffffff;
+      --muted: #98989f;
+      --sep: #38383a;
+      --tint: #ff8a5c;
+      --tint-soft: #3a2117;
+      --on-tint: #1c0c05;
+      --good: #30d158;
+      --good-soft: #10301a;
+      --danger: #ff453a;
+      --bar: rgba(18, 18, 20, .8);
+      --scrim: rgba(0, 0, 0, .55);
       color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #17120e;
-    --surface: #211a14;
-    --surface-2: #2a2019;
-    --fg: #f2e9dc;
-    --muted: #a8977f;
-    --line: #342a20;
-    --line-strong: #463829;
-    --accent: #e5764a;
-    --accent-soft: #3a241a;
-    --gold: #d8a44e;
-    --gold-soft: #2f2616;
-    --good: #8bbf6a;
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    --bg: #000000;
+    --surface: #1c1c1e;
+    --fill: #2c2c2e;
+    --fg: #ffffff;
+    --muted: #98989f;
+    --sep: #38383a;
+    --tint: #ff8a5c;
+    --tint-soft: #3a2117;
+    --on-tint: #1c0c05;
+    --good: #30d158;
+    --good-soft: #10301a;
+    --danger: #ff453a;
+    --bar: rgba(18, 18, 20, .8);
+    --scrim: rgba(0, 0, 0, .55);
     color-scheme: dark;
   }
 
@@ -78,270 +80,324 @@
   body {
     background: var(--bg);
     color: var(--fg);
-    font-family: var(--font-body);
-    line-height: 1.5;
+    font-family: var(--font);
+    font-size: 17px;
+    line-height: 1.3;
+    letter-spacing: -.01em;
     -webkit-font-smoothing: antialiased;
-  }
-  .wrap {
-    max-width: 960px;
-    margin: 0 auto;
-    padding-block: 28px 64px;
-    padding-inline: 16px;
+    -webkit-tap-highlight-color: transparent;
   }
   .tnum { font-variant-numeric: tabular-nums; }
+  ::selection { background: var(--tint-soft); color: var(--fg); }
+  input { caret-color: var(--tint); }
+  button { font: inherit; letter-spacing: inherit; }
+  :focus-visible { outline: 2px solid var(--tint); outline-offset: 2px; }
 
-  /* Header */
-  header { margin-bottom: 22px; }
-  .eyebrow {
-    font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
-    color: var(--gold); font-weight: 600; margin: 0 0 6px;
+  /* ---------- Estructura (respeta la isla y la rayita de abajo del iPhone) ---------- */
+  :root { --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px); }
+  html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+  html { scrollbar-width: none; }
+  html::-webkit-scrollbar { display: none; }
+  body { margin: 0; min-height: 100vh; overscroll-behavior-y: none; }
+  [hidden] { display: none !important; }
+  .sbar {
+    position: sticky; top: 0; z-index: 6; height: var(--safe-top);
+    background: var(--bg); transition: background-color .2s;
   }
+  .scrolled .sbar {
+    background: var(--bar);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+  }
+  .content {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0 calc(24px + var(--safe-bottom));
+  }
+  .navbar {
+    position: sticky; top: var(--safe-top); z-index: 5;
+    height: 44px; display: grid; place-items: center;
+    padding-inline: 16px;
+    background: transparent;
+    transition: background-color .2s, box-shadow .2s;
+  }
+  .navbar .ntitle { font-weight: 600; font-size: 17px; opacity: 0; transition: opacity .2s; }
+  .scrolled .navbar {
+    background: var(--bar);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    box-shadow: 0 1px 0 var(--sep);
+  }
+  .scrolled .navbar .ntitle { opacity: 1; }
+
+  /* ---------- Título grande ---------- */
+  .large { padding: 2px 4px 16px; }
+  .subline { margin: 2px 0 0; font-size: 15px; font-weight: 600; color: var(--tint); }
   h1 {
-    font-family: var(--font-display);
-    font-weight: 600; font-size: clamp(28px, 6vw, 40px);
-    line-height: 1.05; margin: 0; text-wrap: balance;
-    font-optical-sizing: auto;
+    margin: 0; font-size: 34px; line-height: 1.12; font-weight: 700; letter-spacing: -.02em;
+    text-wrap: balance;
   }
-  .sub { color: var(--muted); margin: 8px 0 0; font-size: 14px; max-width: 60ch; }
+  .lead { margin: 6px 0 0; font-size: 15px; color: var(--muted); max-width: 46ch; line-height: 1.38; text-wrap: pretty; }
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+  /* ---------- Tarjetas de resumen ---------- */
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tile {
+    background: var(--surface); border-radius: 14px; padding: 12px 14px 14px; min-width: 0;
   }
-  .section-title {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: 12px; margin: 30px 0 12px;
+  .tile .k { font-size: 13px; font-weight: 600; color: var(--muted); }
+  .tile .v {
+    font-family: var(--font-round); font-weight: 700; font-size: 24px; letter-spacing: -.02em;
+    margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .section-title h2 {
-    font-family: var(--font-display); font-weight: 600;
-    font-size: 19px; margin: 0;
-  }
-  .section-title .hint { color: var(--muted); font-size: 13px; }
+  .tile.hot { background: var(--tint); color: var(--on-tint); }
+  .tile .s { font-size: 13px; color: var(--muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .tile.hot .k, .tile.hot .s { color: var(--on-tint); }
 
-  /* Config porcentajes */
-  .config { padding: 16px; }
-  .pcts {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
-  }
-  .pct-field {
-    background: var(--surface-2);
-    border: 1px solid var(--line);
-    border-radius: 10px; padding: 10px 12px;
-  }
-  .pct-field label {
-    display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
-    color: var(--muted); font-weight: 600; margin-bottom: 4px;
-  }
-  .pct-input-row { display: flex; align-items: baseline; gap: 4px; }
-  .pct-input-row input {
-    width: 100%; border: none; background: transparent; color: var(--fg);
-    font-size: 20px; font-weight: 600; font-family: var(--font-body);
-    font-variant-numeric: tabular-nums; padding: 0; min-width: 0;
-  }
-  .pct-input-row input:focus { outline: none; }
-  .pct-field:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
-  .pct-input-row .unit { color: var(--muted); font-weight: 600; font-size: 15px; }
-
-  .sum-note {
-    margin-top: 12px; font-size: 13px; display: flex; align-items: center;
-    gap: 8px; flex-wrap: wrap;
-  }
-  .badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 3px 10px; border-radius: 999px; font-weight: 600; font-size: 12.5px;
-  }
-  .badge.ok { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
-  .badge.warn { background: var(--accent-soft); color: var(--accent); }
-  .sum-note .muted { color: var(--muted); }
-
-  /* Resumen */
-  .summary {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px;
-  }
-  .stat { padding: 14px 16px; }
-  .stat .k { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-  .stat .v { font-family: var(--font-display); font-size: clamp(22px, 5vw, 30px); font-weight: 600; margin-top: 2px; }
-  .stat.accent { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .stat.accent .k { color: rgba(255,255,255,.8); }
-  .areas-summary {
-    margin-top: 10px; padding: 14px 16px;
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: 12px;
-  }
-  .area-sum { }
-  .area-sum .k { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; display: flex; align-items: center; gap: 6px; }
-  .area-sum .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); display: inline-block; flex: none; }
-  .area-sum .v { font-size: 17px; font-weight: 600; margin-top: 2px; }
-  .area-sum .p { font-size: 12px; color: var(--muted); }
-
-  /* Lista meseros */
-  .mesero {
-    padding: 14px 16px; margin-top: 12px;
-  }
-  .mesero-head {
-    display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end;
-  }
-  .in-group { min-width: 0; }
-  .in-group label {
-    display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
-    color: var(--muted); font-weight: 600; margin-bottom: 4px;
-  }
-  .in-group input {
-    width: 100%; border: 1px solid var(--line); background: var(--surface-2);
-    color: var(--fg); border-radius: 10px; padding: 9px 11px; font-size: 16px;
-    font-family: var(--font-body); min-width: 0;
-  }
-  .in-group input.venta { font-variant-numeric: tabular-nums; font-weight: 600; }
-  .in-group input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
-  .venta-wrap { position: relative; }
-  .venta-wrap .peso { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-weight: 600; pointer-events: none; }
-  .venta-wrap input { padding-left: 24px; }
-
-  .btn-del {
-    border: 1px solid var(--line); background: var(--surface); color: var(--muted);
-    border-radius: 10px; width: 40px; height: 40px; font-size: 18px; cursor: pointer;
-    flex: none; line-height: 1; display: grid; place-items: center;
-  }
-  .btn-del:hover { color: var(--accent); border-color: var(--accent); }
-
-  .mesero-punto {
+  /* ---------- Listas agrupadas ---------- */
+  .sec { margin-top: 26px; }
+  .sec-head {
     display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
-    margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line-strong);
-    flex-wrap: wrap;
+    padding: 0 16px 7px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .01em;
   }
-  .mesero-punto .lbl { font-size: 13px; color: var(--muted); font-weight: 600; }
-  .mesero-punto .amt { font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--accent); }
+  .sec-foot { padding: 7px 16px 0; font-size: 13px; color: var(--muted); line-height: 1.38; text-wrap: pretty; }
+  .sec-foot b { color: var(--fg); font-weight: 600; }
+  .group { background: var(--surface); border-radius: 12px; overflow: hidden; }
+  .row {
+    position: relative; display: flex; align-items: center; gap: 12px;
+    min-height: 46px; padding: 10px 16px;
+  }
+  .row + .row::before {
+    content: ""; position: absolute; top: 0; left: 16px; right: 0; height: 1px; background: var(--sep);
+  }
+  .row .label { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; }
+  .row .label .sub { color: var(--muted); font-size: 15px; }
+  .row .val { font-variant-numeric: tabular-nums; color: var(--muted); }
+  .row .val.strong { color: var(--fg); font-weight: 600; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; background: var(--tint); }
+  .dot.a1 { background: #8e8e93; }
+  .dot.a2 { background: #ff9f0a; }
+  .dot.a3 { background: #0a84ff; }
+  .dot.a4 { background: #bf5af2; }
+  .dot.a5 { background: #30b0c7; }
 
-  .breakdown {
-    margin-top: 12px; display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px;
+  .field {
+    display: flex; align-items: baseline; gap: 2px; justify-content: flex-end;
   }
-  .b-item {
-    background: var(--surface-2); border: 1px solid var(--line);
-    border-radius: 10px; padding: 9px 11px;
+  .field input {
+    border: 0; background: transparent; color: var(--fg); font: inherit; font-size: 17px;
+    text-align: right; padding: 0; min-width: 0; width: 7ch;
+    font-variant-numeric: tabular-nums;
   }
-  .b-item .bk { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; display: flex; align-items: center; gap: 5px; }
-  .b-item .bk .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); flex: none; }
-  .b-item .bv { font-size: 15px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
-  .b-item .bp { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .field input:focus { outline: none; color: var(--tint); }
+  .field .unit { color: var(--muted); }
+  .row:focus-within .field .unit { color: var(--tint); }
 
-  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
-  .btn {
-    border-radius: 10px; padding: 11px 18px; font-size: 15px; font-weight: 600;
-    font-family: var(--font-body); cursor: pointer; border: 1px solid var(--line);
+  .status {
+    display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px;
+    border-radius: 999px; padding: 3px 10px; text-transform: none; letter-spacing: 0;
   }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .btn.primary:hover { filter: brightness(1.05); }
-  .btn.ghost { background: var(--surface); color: var(--fg); }
-  .btn.ghost:hover { border-color: var(--gold); }
-  .btn.gold { background: var(--gold); border-color: var(--gold); color: #fff; }
-  .btn.gold:hover { filter: brightness(1.05); }
+  .status.ok { background: var(--good-soft); color: var(--good); }
+  .status.warn { background: var(--tint-soft); color: var(--tint); }
 
-  .foot { color: var(--muted); font-size: 12.5px; margin-top: 26px; text-align: center; }
-  .foot b { color: var(--fg); font-weight: 600; }
-
-  @media (max-width: 480px) {
-    .summary { grid-template-columns: 1fr; }
+  /* ---------- Meseros ---------- */
+  .mesero { margin-top: 18px; }
+  .mesero:first-child { margin-top: 0; }
+  .mesero .sec-head { align-items: center; }
+  .link-del {
+    position: relative; border: 0; background: none; color: var(--danger); padding: 4px 0;
+    font-size: 15px; text-transform: none; cursor: pointer; letter-spacing: 0;
+  }
+  .link-del::after { content: ""; position: absolute; inset: -12px -12px; }
+  .mhead { display: inline-flex; align-items: center; gap: 7px; }
+  .mhead .dot { background: var(--sep); transition: background-color .2s; }
+  .row input.name, .row input.venta {
+    flex: 1; min-width: 0; border: 0; background: transparent; color: var(--fg);
+    font: inherit; font-size: 17px; padding: 0;
+  }
+  .row input.name { font-weight: 600; }
+  .row input.venta { text-align: right; font-variant-numeric: tabular-nums; }
+  .row input::placeholder { color: var(--muted); opacity: 1; font-weight: 400; }
+  .row input.name:focus, .row input.venta:focus { outline: none; }
+  .row:focus-within { background: var(--fill); }
+  .peso { color: var(--muted); }
+  .punto-row .label { font-weight: 600; }
+  .punto-row .label .sub { font-weight: 400; }
+  .punto-row .amt {
+    font-family: var(--font-round); font-weight: 700; font-size: 20px; color: var(--tint);
   }
 
-  /* Instalar como app */
-  .install { display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin-top: 18px; }
-  .install .ico { width: 44px; height: 44px; border-radius: 10px; flex: none; }
-  .install .txt { flex: 1; min-width: 0; font-size: 13px; color: var(--muted); line-height: 1.35; }
-  .install .txt b { display: block; font-size: 15px; color: var(--fg); }
-  .install .btn { padding: 9px 14px; font-size: 14px; flex: none; }
-  .install .x { background: none; border: none; color: var(--muted); font-size: 22px; line-height: 1; cursor: pointer; padding: 4px; flex: none; }
-  .sheet-backdrop {
-    position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.45);
-    display: flex; align-items: flex-end; justify-content: center;
+  details.desglose summary {
+    list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
+    min-height: 46px; padding: 10px 16px; position: relative; color: var(--tint);
   }
-  .sheet {
-    background: var(--surface); color: var(--fg); width: 100%; max-width: 480px;
-    border-radius: 18px 18px 0 0; box-shadow: var(--shadow);
-    padding: 22px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  details.desglose summary::-webkit-details-marker { display: none; }
+  details.desglose summary::before {
+    content: ""; position: absolute; top: 0; left: 16px; right: 0; height: 1px; background: var(--sep);
   }
-  .sheet h3 { font-family: var(--font-display); font-weight: 600; font-size: 21px; margin: 0 0 14px; }
-  .sheet ol { margin: 0; padding-left: 22px; display: grid; gap: 12px; font-size: 15px; }
-  .sheet .share-ico { width: 18px; height: 18px; vertical-align: -3px; color: var(--accent); }
-  .sheet .note { color: var(--muted); font-size: 13px; margin: 14px 0 0; }
+  details.desglose summary .label { flex: 1; }
+  .chev {
+    width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
+    transform: rotate(-45deg); transition: transform .2s; margin-right: 4px;
+  }
+  details[open] .chev { transform: rotate(45deg); }
+  .b-item { font-size: 15px; min-height: 40px; padding-block: 8px; }
+  .b-item .bp { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+
+  /* ---------- Participación ---------- */
+  .row.part { flex-direction: column; align-items: stretch; gap: 6px; padding-block: 12px; }
+  .part-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .part-top .pname { display: flex; align-items: center; gap: 8px; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .part-top .pval { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; }
+  .track { height: 10px; border-radius: 5px; background: var(--fill); overflow: hidden; }
+  .track span { display: block; height: 100%; border-radius: 5px; transition: width .35s var(--ease); }
+
+  /* Dona de participación */
+  .donut-row { display: flex; align-items: center; gap: 18px; padding: 16px; }
+  .donut { width: 132px; height: 132px; flex: none; }
+  .donut .bg { stroke: var(--fill); }
+  .donut .arc { transition: stroke-dasharray .35s var(--ease), stroke-dashoffset .35s var(--ease); }
+  .donut .c-num { font: 700 30px var(--font-round); fill: var(--fg); }
+  .donut .c-lbl { font: 600 11px var(--font); fill: var(--muted); }
+  .hl { min-width: 0; display: grid; gap: 12px; flex: 1; }
+  .hl .k { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .02em; }
+  .hl .v { font-size: 17px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; gap: 7px; }
+  .hl .s { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .part-sub { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .empty { color: var(--muted); font-size: 15px; }
+
+  /* ---------- Acciones ---------- */
+  .btn-fill {
+    width: 100%; border: 0; border-radius: 14px; padding: 15px 16px;
+    background: var(--tint); color: var(--on-tint); font-size: 17px; font-weight: 600; cursor: pointer;
+    margin-top: 22px;
+  }
+  .btn-fill { transition: transform .15s var(--ease), opacity .15s; }
+  .btn-fill:active { transform: scale(.98); opacity: .9; }
+  .row.action { border: 0; background: transparent; width: 100%; text-align: left; cursor: pointer; color: var(--tint); font-size: 17px; }
+  .row.action.danger { color: var(--danger); }
+  .row.action:active { background: var(--fill); }
+  .row.action .sub { color: var(--muted); font-size: 13px; }
+  .row.action .chev { border-color: var(--muted); opacity: .6; }
+  .row.action .label { display: grid; gap: 1px; }
+  .row.action .label .sub { font-size: 13px; color: var(--muted); }
+  .ic {
+    width: 30px; height: 30px; border-radius: 8px; flex: none; display: grid; place-items: center;
+  }
+  .ic svg { width: 19px; height: 19px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .ic.green { background: var(--ic-green); }
+  .ic.blue { background: var(--ic-blue); }
+  .ic.gray { background: var(--ic-gray); }
+  .ic.red { background: var(--ic-red); }
+  .group.with-icons .row + .row::before { left: 58px; }
+  .foot-note { text-align: center; font-size: 12px; color: var(--muted); margin: 22px 0 0; }
+
+  /* ---------- Hoja de confirmación ---------- */
+  .sheet-wrap {
+    position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; justify-content: flex-end;
+    background: var(--scrim);
+    padding: 10px max(10px, env(safe-area-inset-right, 0px)) calc(4px + var(--safe-bottom)) max(10px, env(safe-area-inset-left, 0px));
+  }
+  .sheet-wrap[hidden] { display: none; }
+  .sheet { display: grid; gap: 8px; max-width: 480px; width: 100%; margin: 0 auto; }
+  .sheet .box { background: var(--surface); border-radius: 14px; overflow: hidden; text-align: center; }
+  .sheet .msg { padding: 14px 16px; font-size: 13px; color: var(--muted); line-height: 1.38; }
+  .sheet .msg b { display: block; color: var(--fg); font-size: 13px; margin-bottom: 2px; }
+  .sheet button {
+    display: block; width: 100%; border: 0; background: var(--surface); color: var(--tint);
+    font-size: 20px; padding: 16px; cursor: pointer; border-top: 1px solid var(--sep);
+  }
+  .sheet button.destroy { color: var(--danger); }
+  .sheet .cancel { border-top: 0; border-radius: 14px; font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
 </style>
+</head>
+<body>
+<div class="sbar" aria-hidden="true"></div>
+        <nav class="navbar"><span class="ntitle">Reparto de Punto</span></nav>
 
-<div class="wrap">
-  <header>
-    <p class="eyebrow">Cierre de turno</p>
-    <h1>Reparto de Punto</h1>
-    <p class="sub">Captura la venta de cada mesero y la herramienta calcula el punto total y cuánto le toca a cada área. Se guarda solo en este dispositivo.</p>
-    <div class="card install" id="installBar" hidden>
-      <img class="ico" src="icon-180.png" alt="">
-      <div class="txt"><b>Instala la app</b>Ábrela desde tu pantalla de inicio, aunque no haya señal.</div>
-      <button class="btn primary" id="installBtn">Instalar</button>
-      <button class="x" id="installClose" aria-label="Ahora no">&times;</button>
-    </div>
-  </header>
+        <main class="content">
+          <header class="large" id="largeTitle">
+            <h1>Reparto de Punto</h1>
+            <p class="subline" id="todayLbl">Sala de Despecho</p>
+            <p class="lead">Captura la venta de cada mesero y la app reparte el punto entre las áreas.</p>
+          </header>
 
-  <div class="sheet-backdrop" id="iosSheet" hidden>
-    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="iosTitle">
-      <h3 id="iosTitle">Instalar en tu iPhone</h3>
-      <ol>
-        <li>Toca <b>Compartir</b> <svg class="share-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg> en la barra de Safari (si no lo ves, toca <b>•••</b> y luego <b>Compartir</b>).</li>
-        <li>Desliza hacia abajo y elige <b>Agregar a inicio</b>.</li>
-        <li>Toca <b>Agregar</b>. Listo: abre <b>Punto</b> desde tu pantalla de inicio.</li>
-      </ol>
-      <p class="note">Tus datos se quedan en la app instalada. Si borras el ícono, se borra lo capturado.</p>
-      <button class="btn primary" id="iosOk" style="width:100%;margin-top:18px">Entendido</button>
-    </div>
-  </div>
+          <!-- Resumen -->
+          <div class="tiles">
+            <div class="tile">
+              <div class="k">Venta total</div>
+              <div class="v tnum" id="sumVenta">$0.00</div>
+              <div class="s" id="sumVentaSub"></div>
+            </div>
+            <div class="tile hot">
+              <div class="k">Punto total</div>
+              <div class="v tnum" id="sumPunto">$0.00</div>
+              <div class="s" id="sumPuntoSub"></div>
+            </div>
+          </div>
 
-  <!-- Config porcentajes -->
-  <div class="section-title">
-    <h2>Porcentajes por área</h2>
-    <span class="hint">% sobre la venta de cada mesero</span>
-  </div>
-  <div class="card config">
-    <div class="pcts" id="pcts"></div>
-    <div class="sum-note" id="sumNote"></div>
-  </div>
+          <section class="sec">
+            <div class="sec-head"><span>Participación por mesero</span><span>% de la venta</span></div>
+            <div class="group" id="partList"></div>
+          </section>
 
-  <!-- Resumen -->
-  <div class="section-title">
-    <h2>Resumen del turno</h2>
-    <span class="hint" id="countHint"></span>
-  </div>
-  <div class="summary">
-    <div class="card stat">
-      <div class="k">Venta total</div>
-      <div class="v tnum" id="sumVenta">$0.00</div>
-    </div>
-    <div class="card stat accent">
-      <div class="k">Punto total <span id="puntoRateLbl"></span></div>
-      <div class="v tnum" id="sumPunto">$0.00</div>
-    </div>
-  </div>
-  <div class="card areas-summary" id="areasSummary"></div>
+          <section class="sec">
+            <div class="sec-head"><span>Reparto por área</span><span id="areasRate"></span></div>
+            <div class="group" id="areasSummary"></div>
+          </section>
 
-  <!-- Lista meseros -->
-  <div class="section-title">
-    <h2>Meseros</h2>
-    <span class="hint">Punto por persona = suma de las áreas sobre su venta</span>
-  </div>
-  <div id="meseros"></div>
+          <!-- Meseros -->
+          <section class="sec">
+            <div class="sec-head"><span>Meseros</span></div>
+            <div id="meseros"></div>
+            <button class="btn-fill" id="addBtn">Agregar mesero</button>
+          </section>
 
-  <div class="actions">
-    <button class="btn primary" id="addBtn">+ Agregar mesero</button>
-    <button class="btn gold" id="shareBtn" hidden>Enviar resumen</button>
-    <button class="btn gold" id="excelBtn">Copiar para Excel</button>
-    <button class="btn ghost" id="copyBtn">Copiar resumen</button>
-    <button class="btn ghost" id="resetBtn">Hacer corte (vaciar)</button>
-  </div>
-  <p class="foot" style="margin-top:12px;text-align:left">
-    <b>Al cierre:</b> toca <b>Copiar para Excel</b>, abre <b>Cortes/venta del dia.xlsx</b>, haz clic en la primera celda vacía de la columna <b>Fecha</b> y pega (Ctrl+V). Al final usa <b>Hacer corte (vaciar)</b> para dejar la lista lista para el día siguiente.
-  </p>
+          <!-- Acciones -->
+          <section class="sec">
+            <div class="sec-head"><span>Cierre del día</span></div>
+            <div class="group with-icons">
+              <button class="row action" id="reportBtn">
+                <span class="ic green" aria-hidden="true"><svg viewBox="0 0 20 20"><rect x="3.5" y="3.5" width="13" height="13" rx="2.5"/><path d="M7.2 13.2v-2.6M10 13.2V7M12.8 13.2V9"/></svg></span>
+                <span class="label"><span class="t">Descargar reporte de Excel</span><span class="sub">Tablas con formato y 3 gráficas</span></span><span class="chev"></span>
+              </button>
+              <button class="row action" id="excelBtn">
+                <span class="ic blue" aria-hidden="true"><svg viewBox="0 0 20 20"><rect x="7" y="7" width="9.5" height="9.5" rx="2"/><path d="M13 7V5.5A1.5 1.5 0 0 0 11.5 4h-6A1.5 1.5 0 0 0 4 5.5v6A1.5 1.5 0 0 0 5.5 13H7"/></svg></span>
+                <span class="label"><span class="t">Copiar filas para la bitácora</span></span><span class="chev"></span>
+              </button>
+              <button class="row action" id="copyBtn">
+                <span class="ic gray" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 6h10M5 10h10M5 14h6"/></svg></span>
+                <span class="label"><span class="t">Copiar resumen</span></span><span class="chev"></span>
+              </button>
+              <button class="row action danger" id="resetBtn">
+                <span class="ic red" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4.5 6h11M8 6V4.5h4V6M6.2 6l.7 9.5h6.2l.7-9.5"/></svg></span>
+                <span class="label"><span class="t">Hacer corte (vaciar)</span></span>
+              </button>
+            </div>
+            <p class="sec-foot"><b>Bitácora:</b> copia las filas, abre <b>Cortes/venta del dia.xlsx</b> y pega en la primera celda vacía de la columna <b>Fecha</b>. Al terminar, usa <b>Hacer corte</b> para empezar el día siguiente en limpio.</p>
+          </section>
 
-  <p class="foot">El <b>punto total</b> es la suma de lo que se reparte a las 5 áreas (<b>9.5%</b> de la venta). Si esa suma cambia, la herramienta te lo marca para que revises los porcentajes.</p>
-</div>
+          <!-- Porcentajes -->
+          <section class="sec">
+            <div class="sec-head"><span>Ajustes · Porcentajes por área</span></div>
+            <div class="group" id="pcts"></div>
+            <div class="sec-foot" id="sumNote"></div>
+          </section>
 
+          <p class="foot-note">Los datos se guardan solo en este dispositivo.</p>
+        </main>
+      <div class="sheet-wrap" id="sheet" hidden>
+        <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+          <div class="box">
+            <div class="msg"><b id="sheetTitle">¿Hacer corte del día?</b>Se borrarán los meseros y ventas capturados. Los porcentajes se quedan igual.</div>
+            <button class="destroy" id="sheetOk">Hacer corte</button>
+          </div>
+          <button class="cancel" id="sheetCancel">Cancelar</button>
+        </div>
+      </div>
 <script>
   var MXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2 });
   function money(n){ return MXN.format(isFinite(n) ? n : 0); }
@@ -368,30 +424,53 @@
 
   var meseros = load(LS_MESEROS, null);
   if(!meseros || !Array.isArray(meseros)){
-    // Estado inicial de ejemplo (editable): incluye el caso del sábado.
     meseros = [
       { name:'Ejemplo (sábado)', venta:'49563' },
       { name:'', venta:'' }
     ];
   }
 
-  var PUNTO_RATE = 0.10;
+  function escapeAttr(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+  function dotClass(i){ return 'dot a' + (i+1); }
+  var NUM2 = new Intl.NumberFormat('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function rawVenta(v){ return String(v==null?'':v).replace(/[^0-9.]/g,''); }
+  function fmtVenta(v){ var n = parseNum(v); return n > 0 ? NUM2.format(n) : rawVenta(v); }
+  function pct1(x){ return (Math.round(x*1000)/10).toFixed(1) + '%'; }
+  function meseroColor(k){ return '#' + XL_MESERO_COLORS[k % XL_MESERO_COLORS.length]; }
 
-  // ---- Render porcentajes ----
+  // Animación de barras y dona: parte del valor anterior y llega al nuevo (sin animar al cargar).
+  var animPrev = {};
+  function animFrom(key, target){ var p = Object.prototype.hasOwnProperty.call(animPrev, key) ? animPrev[key] : target; animPrev[key] = target; return p; }
+  function animApply(root){
+    var els = root.querySelectorAll('[data-to]');
+    if(!els.length) return;
+    void root.offsetHeight;
+    els.forEach(function(el){
+      var to = el.getAttribute('data-to');
+      if(el.tagName.toLowerCase() === 'circle'){
+        var parts = to.split(',');
+        el.style.strokeDasharray = parts[0] + ' ' + parts[1];
+        el.style.strokeDashoffset = parts[2];
+      } else {
+        el.style.width = to + '%';
+      }
+    });
+  }
+  function barHtml(key, pct, color){
+    var to = Math.max(0, Math.min(100, pct*100));
+    var from = animFrom(key, to);
+    return '<div class="track"><span data-to="'+to.toFixed(2)+'" style="width:'+from.toFixed(2)+'%;background:'+color+'"></span></div>';
+  }
+
+  // ---- Porcentajes ----
   var pctsEl = document.getElementById('pcts');
   function renderPcts(){
-    pctsEl.innerHTML = '';
-    areas.forEach(function(a, i){
-      var f = document.createElement('div');
-      f.className = 'pct-field';
-      f.innerHTML =
-        '<label>'+a.name+'</label>'+
-        '<div class="pct-input-row">'+
-          '<input type="text" inputmode="decimal" data-pct="'+i+'" value="'+a.pct+'" aria-label="Porcentaje '+a.name+'">'+
-          '<span class="unit">%</span>'+
-        '</div>';
-      pctsEl.appendChild(f);
-    });
+    pctsEl.innerHTML = areas.map(function(a, i){
+      return '<label class="row" for="pct-'+i+'">'+
+        '<span class="label"><span class="'+dotClass(i)+'"></span>'+escapeAttr(a.name)+'</span>'+
+        '<span class="field"><input id="pct-'+i+'" type="text" inputmode="decimal" data-pct="'+i+'" value="'+a.pct+'" aria-label="Porcentaje '+escapeAttr(a.name)+'"><span class="unit">%</span></span>'+
+      '</label>';
+    }).join('');
     pctsEl.querySelectorAll('input[data-pct]').forEach(function(inp){
       inp.addEventListener('input', function(){
         var i = +inp.getAttribute('data-pct');
@@ -402,49 +481,53 @@
     });
   }
 
-  // ---- Render meseros ----
+  // ---- Meseros ----
   var meserosEl = document.getElementById('meseros');
   function renderMeseros(){
     meserosEl.innerHTML = '';
     meseros.forEach(function(m, idx){
-      var card = document.createElement('div');
-      card.className = 'card mesero';
-      card.setAttribute('data-row', idx);
+      var wrap = document.createElement('div');
+      wrap.className = 'mesero';
+      wrap.setAttribute('data-row', idx);
 
-      var breakdownHtml = areas.map(function(a){
-        return '<div class="b-item" data-area="'+a.id+'">'+
-          '<div class="bk"><span class="dot"></span>'+a.name+'</div>'+
-          '<div class="bv" data-bv></div>'+
-          '<div class="bp" data-bp></div>'+
+      var breakdownHtml = areas.map(function(a, i){
+        return '<div class="row b-item" data-area="'+a.id+'">'+
+          '<span class="label"><span class="'+dotClass(i)+'"></span>'+escapeAttr(a.name)+' <span class="bp" data-bp></span></span>'+
+          '<span class="val strong" data-bv></span>'+
         '</div>';
       }).join('');
 
-      card.innerHTML =
-        '<div class="mesero-head">'+
-          '<div class="in-group">'+
-            '<label>Mesero</label>'+
-            '<input type="text" data-name value="'+escapeAttr(m.name)+'" placeholder="Nombre del mesero">'+
+      wrap.innerHTML =
+        '<div class="sec-head"><span class="mhead"><span class="dot" data-mdot></span>Mesero '+(idx+1)+'<span class="tnum" data-mshare></span></span>'+
+          '<button class="link-del" data-del aria-label="Quitar mesero '+(idx+1)+'">Quitar</button></div>'+
+        '<div class="group">'+
+          '<label class="row" for="name-'+idx+'">'+
+            '<input class="name" id="name-'+idx+'" type="text" data-name value="'+escapeAttr(m.name)+'" placeholder="Nombre del mesero" autocomplete="off">'+
+          '</label>'+
+          '<label class="row" for="venta-'+idx+'">'+
+            '<span class="label">Venta del día</span>'+
+            '<span class="peso">$</span>'+
+            '<input class="venta" id="venta-'+idx+'" type="text" inputmode="decimal" data-venta value="'+escapeAttr(fmtVenta(m.venta))+'" placeholder="0.00" style="flex:0 1 11ch">'+
+          '</label>'+
+          '<div class="row punto-row">'+
+            '<span class="label">Punto a dejar <span class="sub rate"></span></span>'+
+            '<span class="amt tnum" data-punto>$0.00</span>'+
           '</div>'+
-          '<button class="btn-del" title="Quitar" data-del aria-label="Quitar mesero">&times;</button>'+
-        '</div>'+
-        '<div class="in-group venta-wrap" style="margin-top:10px">'+
-          '<label>Venta de punto del día</label>'+
-          '<span class="peso">$</span>'+
-          '<input class="venta" type="text" inputmode="decimal" data-venta value="'+escapeAttr(m.venta)+'" placeholder="0.00">'+
-        '</div>'+
-        '<div class="mesero-punto">'+
-          '<span class="lbl">Punto a dejar <span class="rate"></span></span>'+
-          '<span class="amt tnum" data-punto>$0.00</span>'+
-        '</div>'+
-        '<div class="breakdown">'+breakdownHtml+'</div>';
+          '<details class="desglose">'+
+            '<summary><span class="label">Desglose por área</span><span class="chev"></span></summary>'+
+            breakdownHtml+
+          '</details>'+
+        '</div>';
 
-      meserosEl.appendChild(card);
+      meserosEl.appendChild(wrap);
 
-      var nameInp = card.querySelector('[data-name]');
-      var ventaInp = card.querySelector('[data-venta]');
-      nameInp.addEventListener('input', function(){ meseros[idx].name = nameInp.value; save(LS_MESEROS, meseros); });
+      var nameInp = wrap.querySelector('[data-name]');
+      var ventaInp = wrap.querySelector('[data-venta]');
+      nameInp.addEventListener('input', function(){ meseros[idx].name = nameInp.value; save(LS_MESEROS, meseros); recalc(); });
       ventaInp.addEventListener('input', function(){ meseros[idx].venta = ventaInp.value; save(LS_MESEROS, meseros); recalc(); });
-      card.querySelector('[data-del]').addEventListener('click', function(){
+      ventaInp.addEventListener('focus', function(){ ventaInp.value = rawVenta(meseros[idx].venta); });
+      ventaInp.addEventListener('blur', function(){ ventaInp.value = fmtVenta(meseros[idx].venta); });
+      wrap.querySelector('[data-del]').addEventListener('click', function(){
         meseros.splice(idx, 1);
         if(meseros.length === 0) meseros.push({name:'', venta:''});
         save(LS_MESEROS, meseros);
@@ -452,8 +535,6 @@
       });
     });
   }
-
-  function escapeAttr(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 
   // ---- Cálculo ----
   function sumPct(){ return areas.reduce(function(acc,a){ return acc + a.pct; }, 0); }
@@ -465,16 +546,13 @@
     var totalVenta = 0, totalPunto = 0;
     var areaTotals = {}; areas.forEach(function(a){ areaTotals[a.id] = 0; });
 
-    var cards = meserosEl.querySelectorAll('.mesero');
-    cards.forEach(function(card, idx){
+    meserosEl.querySelectorAll('.mesero').forEach(function(card, idx){
       var venta = parseNum(meseros[idx] ? meseros[idx].venta : 0);
       var punto = venta * (totalPct/100);
       totalVenta += venta; totalPunto += punto;
       card.querySelector('[data-punto]').textContent = money(punto);
       var rateEl = card.querySelector('.rate'); if(rateEl) rateEl.textContent = rateLbl;
-
-      var items = card.querySelectorAll('.b-item');
-      items.forEach(function(item){
+      card.querySelectorAll('.b-item').forEach(function(item){
         var id = item.getAttribute('data-area');
         var a = areas.find(function(x){ return x.id === id; });
         var amt = venta * (a.pct/100);
@@ -484,32 +562,84 @@
       });
     });
 
+    var conVenta = meserosConVenta();
+    var n = conVenta.length;
+    var kByIdx = {}; conVenta.forEach(function(x){ kByIdx[x.i] = x; });
+
     document.getElementById('sumVenta').textContent = money(totalVenta);
     document.getElementById('sumPunto').textContent = money(totalPunto);
-    document.getElementById('puntoRateLbl').textContent = rateLbl;
+    document.getElementById('sumVentaSub').textContent = n + (n === 1 ? ' mesero con venta' : ' meseros con venta');
+    document.getElementById('sumPuntoSub').textContent = totalPctR + '% de la venta';
+    document.getElementById('areasRate').textContent = totalPctR + '% de la venta';
 
-    // Resumen por área
-    var as = document.getElementById('areasSummary');
-    as.innerHTML = areas.map(function(a){
-      return '<div class="area-sum">'+
-        '<div class="k"><span class="dot"></span>'+a.name+' <span style="color:var(--muted);font-weight:600">· '+a.pct+'%</span></div>'+
-        '<div class="v tnum">'+money(areaTotals[a.id])+'</div>'+
+    // Encabezado de cada mesero: color y % que aporta
+    meserosEl.querySelectorAll('.mesero').forEach(function(card, idx){
+      var x = kByIdx[idx];
+      var dot = card.querySelector('[data-mdot]'), sh = card.querySelector('[data-mshare]');
+      dot.style.background = x ? meseroColor(x.k) : '';
+      sh.textContent = (x && totalVenta) ? ' · ' + pct1(x.venta/totalVenta) : '';
+    });
+
+    var areasEl = document.getElementById('areasSummary');
+    areasEl.innerHTML = areas.map(function(a, i){
+      var share = totalPct ? a.pct/totalPct : 0;
+      return '<div class="row part">'+
+        '<div class="part-top"><span class="pname"><span class="'+dotClass(i)+'"></span>'+escapeAttr(a.name)+'</span>'+
+          '<span class="pval">'+money(areaTotals[a.id])+'</span></div>'+
+        barHtml('area-'+a.id, share, '#'+XL_AREA_COLORS[i%5])+
+        '<div class="part-sub"><span>'+a.pct+'% de la venta</span><span>'+pct1(share)+' del punto</span></div>'+
       '</div>';
     }).join('');
+    animApply(areasEl);
 
-    // Contador
-    var n = meseros.filter(function(m){ return parseNum(m.venta) > 0; }).length;
-    document.getElementById('countHint').textContent = n + (n===1 ? ' mesero con venta' : ' meseros con venta');
+    // Participación por mesero: dona + barras (de mayor a menor venta)
+    var orden = conVenta.slice().sort(function(a,b){ return b.venta - a.venta; });
+    var partEl = document.getElementById('partList');
+    if(!orden.length){
+      partEl.innerHTML = '<div class="row"><span class="empty">Captura la venta de al menos un mesero para ver su participación.</span></div>';
+    } else {
+      var R = 48, C = 2*Math.PI*R, off = 0, gap = orden.length > 1 ? 2 : 0;
+      var arcs = orden.map(function(x){
+        var share = x.venta/totalVenta, len = Math.max(0.5, share*C - gap);
+        var key = 'arc-' + x.i, target = [len.toFixed(2), C.toFixed(2), (-off).toFixed(2)];
+        var from = animFrom(key, target.join(','));
+        var f = from.split(',');
+        off += share*C;
+        return '<circle class="arc" cx="60" cy="60" r="'+R+'" fill="none" stroke="'+meseroColor(x.k)+'" stroke-width="18" transform="rotate(-90 60 60)" data-to="'+target.join(',')+'" style="stroke-dasharray:'+f[0]+' '+f[1]+';stroke-dashoffset:'+f[2]+'"><title>'+escapeAttr(x.name)+' '+pct1(share)+'</title></circle>';
+      }).join('');
+      var top = orden[0];
+      var donut = '<div class="row donut-row">'+
+        '<svg class="donut" viewBox="0 0 120 120" role="img" aria-label="Participación de cada mesero en la venta">'+
+          '<circle class="bg" cx="60" cy="60" r="'+R+'" fill="none" stroke-width="18"/>'+arcs+
+          '<text class="c-num tnum" x="60" y="62" text-anchor="middle">'+n+'</text>'+
+          '<text class="c-lbl" x="60" y="78" text-anchor="middle">'+(n === 1 ? 'mesero' : 'meseros')+'</text>'+
+        '</svg>'+
+        '<div class="hl">'+
+          '<div><div class="k">Mayor aportación</div>'+
+            '<div class="v"><span class="dot" style="background:'+meseroColor(top.k)+'"></span><span style="overflow:hidden;text-overflow:ellipsis">'+escapeAttr(top.name)+'</span></div>'+
+            '<div class="s">'+pct1(top.venta/totalVenta)+' · '+money(top.venta)+'</div></div>'+
+          '<div><div class="k">Promedio por mesero</div>'+
+            '<div class="v tnum">'+money(totalVenta/n)+'</div></div>'+
+        '</div>'+
+      '</div>';
+      partEl.innerHTML = donut + orden.map(function(x){
+        var share = x.venta/totalVenta, color = meseroColor(x.k);
+        return '<div class="row part">'+
+          '<div class="part-top"><span class="pname"><span class="dot" style="background:'+color+'"></span>'+escapeAttr(x.name)+'</span>'+
+            '<span class="pval">'+pct1(share)+'</span></div>'+
+          barHtml('bar-' + x.i, share, color)+
+          '<div class="part-sub"><span>Venta '+money(x.venta)+'</span><span>Punto '+money(x.venta*totalPct/100)+'</span></div>'+
+        '</div>';
+      }).join('');
+      animApply(partEl);
+    }
 
-    // Suma de porcentajes = punto efectivo (esperado 9.5%)
     var EXPECTED = 9.5;
-    var note = document.getElementById('sumNote');
     var ok = Math.abs(totalPctR - EXPECTED) < 0.001;
-    note.innerHTML =
-      '<span class="badge '+(ok?'ok':'warn')+'">Punto: '+totalPctR+'% de la venta</span>'+
-      (ok
-        ? '<span class="muted">Suma de las 5 áreas (Gerencia, Cocina, Barra, Host, CAJA).</span>'
-        : '<span class="muted">Ojo: la suma de las 5 áreas debería dar '+EXPECTED+'%. Revisa los porcentajes.</span>');
+    document.getElementById('sumNote').innerHTML =
+      '<span class="status '+(ok?'ok':'warn')+'">Punto: '+totalPctR+'% de la venta</span> '+
+      (ok ? 'Suma de las 5 áreas (Gerencia, Cocina, Barra, Host, CAJA).'
+          : 'Ojo: la suma de las 5 áreas debería dar '+EXPECTED+'%. Revisa los porcentajes.');
   }
 
   // ---- Botones ----
@@ -520,14 +650,20 @@
     var inputs = meserosEl.querySelectorAll('.mesero [data-name]');
     if(inputs.length) inputs[inputs.length-1].focus();
   });
-  document.getElementById('resetBtn').addEventListener('click', function(){
-    if(!confirm('¿Hacer el corte? Se borran los meseros y ventas de hoy. Copia o envía el resumen antes.')) return;
+
+  var sheet = document.getElementById('sheet');
+  document.getElementById('resetBtn').addEventListener('click', function(){ sheet.hidden = false; document.getElementById('sheetCancel').focus(); });
+  document.getElementById('sheetCancel').addEventListener('click', function(){ sheet.hidden = true; });
+  sheet.addEventListener('click', function(e){ if(e.target === sheet) sheet.hidden = true; });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') sheet.hidden = true; });
+  document.getElementById('sheetOk').addEventListener('click', function(){
     meseros = [{ name:'', venta:'' }];
     save(LS_MESEROS, meseros);
     renderMeseros(); recalc();
+    sheet.hidden = true;
   });
 
-  // ---- Copiar resumen ----
+  // ---- Copiar ----
   function fechaCorta(){ return new Date().toLocaleDateString('es-MX'); }
   function n2(x){ return (Math.round((isFinite(x)?x:0)*100)/100).toFixed(2); }
 
@@ -545,28 +681,20 @@
       var nombre = (m.name && m.name.trim()) ? m.name.trim() : 'Mesero';
       lineas.push('• ' + nombre + ' — venta ' + money(venta) + ' → punto ' + money(punto));
     });
-
     var fecha = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
     var out = [];
-    out.push('REPARTO DE PUNTO');
+    out.push('SALA DE DESPECHO — Reparto de punto');
     out.push(fecha);
     out.push('');
     out.push('Venta total: ' + money(totalVenta));
     out.push('Punto total (' + (Math.round(totalPct*100)/100) + '%): ' + money(totalPunto));
     out.push('');
     out.push('POR ÁREA:');
-    areas.forEach(function(a){
-      out.push('• ' + a.name + ' (' + a.pct + '%): ' + money(areaTotals[a.id]));
-    });
-    if(lineas.length){
-      out.push('');
-      out.push('POR MESERO:');
-      lineas.forEach(function(l){ out.push(l); });
-    }
+    areas.forEach(function(a){ out.push('• ' + a.name + ' (' + a.pct + '%): ' + money(areaTotals[a.id])); });
+    if(lineas.length){ out.push(''); out.push('POR MESERO:'); lineas.forEach(function(l){ out.push(l); }); }
     return out.join('\n');
   }
 
-  // Tabla para pegar en Excel (columnas: Fecha, Mesero, Venta, Punto, Gerencia, Cocina, Barra, Host, CAJA)
   function buildExcelTSV(){
     var totalPct = sumPct();
     var fecha = fechaCorta();
@@ -581,7 +709,6 @@
       areas.forEach(function(a){ var amt = venta*(a.pct/100); tArea[a.id]+=amt; cols.push(n2(amt)); });
       rows.push(cols.join('\t'));
     });
-    // Fila de total del día
     var totalCols = [ fecha, 'TOTAL DEL DÍA', n2(tVenta), n2(tPunto) ];
     areas.forEach(function(a){ totalCols.push(n2(tArea[a.id])); });
     rows.push(totalCols.join('\t'));
@@ -589,9 +716,10 @@
   }
 
   function copyToClipboard(texto, btn, okLabel){
-    var prev = btn.textContent;
-    var flash = function(msg, ms){ btn.textContent = msg; setTimeout(function(){ btn.textContent = prev; }, ms||1600); };
-    var done = function(){ flash(okLabel || '¡Copiado!'); };
+    var lbl = btn.querySelector('.t') || btn.querySelector('.label') || btn;
+    var prev = lbl.textContent;
+    var flash = function(msg, ms){ lbl.textContent = msg; setTimeout(function(){ lbl.textContent = prev; }, ms||1600); };
+    var done = function(){ flash(okLabel || 'Copiado'); };
     var fail = function(){
       try {
         var ta = document.createElement('textarea');
@@ -604,58 +732,379 @@
       navigator.clipboard.writeText(texto).then(done, fail);
     } else { fail(); }
   }
+  document.getElementById('copyBtn').addEventListener('click', function(){ copyToClipboard(buildResumen(), this, 'Resumen copiado'); });
+  document.getElementById('excelBtn').addEventListener('click', function(){ copyToClipboard(buildExcelTSV(), this, 'Listo, pega en Excel'); });
 
-  document.getElementById('copyBtn').addEventListener('click', function(){
-    copyToClipboard(buildResumen(), this, '¡Resumen copiado!');
-  });
-  document.getElementById('excelBtn').addEventListener('click', function(){
-    copyToClipboard(buildExcelTSV(), this, '¡Listo! Pega en Excel');
-  });
+  // ===== Reporte de Excel (.xlsx con formato y gráficas) =====
+  var XL_MESERO_COLORS = ['C2461B','3A7CA5','E39B2D','5B8C5A','7A5C99','B5495B','2E8B87','9C6B3F','4F6D8F','D06D3A','6E6E73','8DA33B'];
+  var XL_AREA_COLORS = ['8E8E93','FF9F0A','0A84FF','BF5AF2','30B0C7'];
 
-  // En el iPhone: abre el menú de compartir (WhatsApp, Notas, etc.) con el resumen del turno.
-  var shareBtn = document.getElementById('shareBtn');
-  if(navigator.share){
-    shareBtn.hidden = false;
-    shareBtn.addEventListener('click', function(){
-      navigator.share({ title: 'Reparto de punto', text: buildResumen() }).catch(function(){});
+  function xlEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function xlCol(i){ var s=''; i++; while(i>0){ var m=(i-1)%26; s=String.fromCharCode(65+m)+s; i=Math.floor((i-1)/26); } return s; }
+  function xlR2(x){ return Math.round((isFinite(x)?x:0)*100)/100; }
+
+  // --- ZIP mínimo (sin compresión) ---
+  var CRC_TABLE = (function(){ var t=[]; for(var n=0;n<256;n++){ var c=n; for(var k=0;k<8;k++) c = (c&1) ? (0xEDB88320 ^ (c>>>1)) : (c>>>1); t[n]=c>>>0; } return t; })();
+  function crc32(bytes){ var c=0xFFFFFFFF; for(var i=0;i<bytes.length;i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c>>>8); return (c ^ 0xFFFFFFFF)>>>0; }
+  function zipStore(files){
+    var enc = new TextEncoder(), parts=[], central=[], offset=0;
+    var d=new Date(), dosTime=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1), dosDate=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();
+    Object.keys(files).forEach(function(name){
+      var nameB=enc.encode(name), data=enc.encode(files[name]), crc=crc32(data);
+      var h=new DataView(new ArrayBuffer(30));
+      h.setUint32(0,0x04034b50,true); h.setUint16(4,20,true); h.setUint16(6,0x0800,true); h.setUint16(8,0,true);
+      h.setUint16(10,dosTime,true); h.setUint16(12,dosDate,true); h.setUint32(14,crc,true);
+      h.setUint32(18,data.length,true); h.setUint32(22,data.length,true); h.setUint16(26,nameB.length,true); h.setUint16(28,0,true);
+      parts.push(new Uint8Array(h.buffer), nameB, data);
+      var c=new DataView(new ArrayBuffer(46));
+      c.setUint32(0,0x02014b50,true); c.setUint16(4,20,true); c.setUint16(6,20,true); c.setUint16(8,0x0800,true); c.setUint16(10,0,true);
+      c.setUint16(12,dosTime,true); c.setUint16(14,dosDate,true); c.setUint32(16,crc,true);
+      c.setUint32(20,data.length,true); c.setUint32(24,data.length,true); c.setUint16(28,nameB.length,true);
+      c.setUint32(42,offset,true);
+      central.push(new Uint8Array(c.buffer), nameB);
+      offset += 30 + nameB.length + data.length;
     });
+    var cdSize = central.reduce(function(a,b){ return a+b.length; },0);
+    var e=new DataView(new ArrayBuffer(22)), count=Object.keys(files).length;
+    e.setUint32(0,0x06054b50,true); e.setUint16(8,count,true); e.setUint16(10,count,true);
+    e.setUint32(12,cdSize,true); e.setUint32(16,offset,true);
+    var all=parts.concat(central,[new Uint8Array(e.buffer)]);
+    var total=all.reduce(function(a,b){ return a+b.length; },0), out=new Uint8Array(total), p=0;
+    all.forEach(function(b){ out.set(b,p); p+=b.length; });
+    return out;
   }
 
-  // ---- Instalar como app ----
-  // Android/Chrome: usa el aviso nativo de instalación. iPhone: Safari no lo tiene, así que mostramos los pasos.
-  (function(){
-    var bar = document.getElementById('installBar');
-    var sheet = document.getElementById('iosSheet');
-    var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
-    if(standalone) return;
-    var LS_HIDE = 'sdd_install_hide_until';
-    if(Date.now() < load(LS_HIDE, 0)) return;
-    var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    var deferred = null;
-    if(isIOS) bar.hidden = false;
-    window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); deferred = e; bar.hidden = false; });
-    window.addEventListener('appinstalled', function(){ bar.hidden = true; });
-    document.getElementById('installBtn').addEventListener('click', function(){
-      if(deferred){
-        deferred.prompt();
-        deferred.userChoice.then(function(){ deferred = null; bar.hidden = true; });
-      } else {
-        sheet.hidden = false;
+  // --- Piezas de gráficas ---
+  function xlRich(text, sz){ return '<c:tx><c:rich><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="'+sz+'" b="1"/></a:pPr><a:r><a:rPr lang="es-MX" sz="'+sz+'" b="1"><a:solidFill><a:srgbClr val="1C1C1E"/></a:solidFill></a:rPr><a:t>'+xlEsc(text)+'</a:t></a:r></a:p></c:rich></c:tx>'; }
+  function xlTxPr(sz, color, bold){ return '<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="'+sz+'"'+(bold?' b="1"':'')+'><a:solidFill><a:srgbClr val="'+color+'"/></a:solidFill></a:defRPr></a:pPr><a:endParaRPr lang="es-MX"/></a:p></c:txPr>'; }
+  function xlFill(hex){ return '<c:spPr><a:solidFill><a:srgbClr val="'+hex+'"/></a:solidFill></c:spPr>'; }
+  function xlStrRef(f, vals){ return '<c:strRef><c:f>'+f+'</c:f><c:strCache><c:ptCount val="'+vals.length+'"/>'+vals.map(function(v,i){ return '<c:pt idx="'+i+'"><c:v>'+xlEsc(v)+'</c:v></c:pt>'; }).join('')+'</c:strCache></c:strRef>'; }
+  function xlNumRef(f, vals){ return '<c:numRef><c:f>'+f+'</c:f><c:numCache><c:formatCode>General</c:formatCode><c:ptCount val="'+vals.length+'"/>'+vals.map(function(v,i){ return '<c:pt idx="'+i+'"><c:v>'+xlR2(v)+'</c:v></c:pt>'; }).join('')+'</c:numCache></c:numRef>'; }
+  function xlChartDoc(title, plot, legend){
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'+
+    '<c:roundedCorners val="0"/><c:chart><c:title>'+xlRich(title,1300)+'<c:overlay val="0"/></c:title><c:autoTitleDeleted val="0"/>'+
+    '<c:plotArea><c:layout/>'+plot+'</c:plotArea>'+
+    (legend ? '<c:legend><c:legendPos val="'+legend+'"/><c:overlay val="0"/>'+xlTxPr(900,'3A3A3C')+'</c:legend>' : '')+
+    '<c:plotVisOnly val="1"/><c:dispBlanksAs val="gap"/></c:chart>'+
+    '<c:spPr><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln w="9525"><a:solidFill><a:srgbClr val="D9D9D9"/></a:solidFill></a:ln></c:spPr>'+
+    '<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr><a:latin typeface="Calibri"/></a:defRPr></a:pPr><a:endParaRPr lang="es-MX"/></a:p></c:txPr>'+
+    '</c:chartSpace>';
+  }
+  function xlAxes(catPos, valPos, valFmt){
+    return '<c:catAx><c:axId val="5001"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="'+catPos+'"/>'+
+      '<c:numFmt formatCode="General" sourceLinked="0"/><c:majorTickMark val="none"/><c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'+
+      '<c:spPr><a:ln w="9525"><a:solidFill><a:srgbClr val="BFBFBF"/></a:solidFill></a:ln></c:spPr>'+xlTxPr(900,'3A3A3C')+
+      '<c:crossAx val="5002"/><c:crosses val="autoZero"/><c:auto val="1"/><c:lblAlgn val="ctr"/><c:lblOffset val="100"/><c:noMultiLvlLbl val="0"/></c:catAx>'+
+      '<c:valAx><c:axId val="5002"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="'+valPos+'"/>'+
+      '<c:majorGridlines><c:spPr><a:ln w="9525"><a:solidFill><a:srgbClr val="EBEBEB"/></a:solidFill></a:ln></c:spPr></c:majorGridlines>'+
+      '<c:numFmt formatCode="'+xlEsc(valFmt)+'" sourceLinked="0"/><c:majorTickMark val="none"/><c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'+
+      '<c:spPr><a:ln><a:noFill/></a:ln></c:spPr>'+xlTxPr(900,'6C6C70')+
+      '<c:crossAx val="5001"/><c:crosses val="autoZero"/><c:crossBetween val="between"/></c:valAx>';
+  }
+
+  // model: { fechaLarga, fechaCorta, totalPct, areas:[{name,pct}], meseros:[{name,venta}] }  (solo meseros con venta)
+  function buildReporteFiles(model){
+    var S='Reparto', A=model.areas, M=model.meseros, n=M.length, tp=model.totalPct;
+    var rows={}; function put(r,c,xml){ (rows[r]=rows[r]||[]).push({c:c,x:xml}); }
+    function ref(c,r){ return xlCol(c)+r; }
+    function str(c,r,t,s){ put(r,c,'<c r="'+ref(c,r)+'" s="'+s+'" t="inlineStr"><is><t xml:space="preserve">'+xlEsc(t)+'</t></is></c>'); }
+    function num(c,r,v,s){ put(r,c,'<c r="'+ref(c,r)+'" s="'+s+'"><v>'+v+'</v></c>'); }
+    function fml(c,r,f,v,s){ put(r,c,'<c r="'+ref(c,r)+'" s="'+s+'"><f>'+f+'</f><v>'+v+'</v></c>'); }
+    function blank(c,r,s){ put(r,c,'<c r="'+ref(c,r)+'" s="'+s+'"/>'); }
+
+    var totalVenta = M.reduce(function(a,m){ return a+m.venta; },0);
+    var totalPunto = totalVenta*tp/100;
+    var areaTot = A.map(function(a){ return M.reduce(function(s,m){ return s + m.venta*a.pct/100; },0); });
+    var pctLbl = (Math.round(tp*100)/100)+'%';
+    var lastCol = 4 + A.length; // I
+
+    // Encabezado
+    str(0,1,'SALA DE DESPECHO — Reparto de punto',1); for(var c=1;c<=lastCol;c++) blank(c,1,1);
+    str(0,2,'Cierre del '+model.fechaLarga,2);
+
+    // Bloque de datos por mesero
+    var H=9, F=10, L=9+n, T=10+n;
+    // Resumen
+    str(0,4,'Venta total',3);           fml(1,4,'B'+T, xlR2(totalVenta),4);
+    str(0,5,'Punto total ('+pctLbl+')',3); fml(1,5,'D'+T, xlR2(totalPunto),14);
+    str(0,6,'Meseros con venta',3);     num(1,6,n,5);
+
+    str(0,8,'PARTICIPACIÓN POR MESERO',6);
+    var heads=['Mesero','Venta','% de aportación','Punto a dejar'].concat(A.map(function(a){ return a.name+' ('+a.pct+'%)'; }));
+    heads.forEach(function(h,i){ str(i,H,h,7); });
+    M.forEach(function(m,i){
+      var r=F+i;
+      str(0,r,m.name,8);
+      num(1,r,xlR2(m.venta),9);
+      fml(2,r,'IF($B$'+T+'=0,0,B'+r+'/$B$'+T+')', totalVenta? m.venta/totalVenta : 0, 10);
+      num(3,r,xlR2(m.venta*tp/100),9);
+      A.forEach(function(a,j){ num(4+j,r,xlR2(m.venta*a.pct/100),9); });
+    });
+    str(0,T,'TOTAL DEL DÍA',11);
+    fml(1,T,'SUM(B'+F+':B'+L+')',xlR2(totalVenta),12);
+    fml(2,T,'SUM(C'+F+':C'+L+')',totalVenta?1:0,13);
+    fml(3,T,'SUM(D'+F+':D'+L+')',xlR2(totalPunto),12);
+    A.forEach(function(a,j){ var cl=xlCol(4+j); fml(4+j,T,'SUM('+cl+F+':'+cl+L+')',xlR2(areaTot[j]),12); });
+
+    // Bloque por área
+    var SA=T+2, HA=SA+1, FA=HA+1, LA=FA+A.length-1, TA=LA+1;
+    str(0,SA,'REPARTO POR ÁREA',6);
+    ['Área','% de la venta','Monto','% del punto'].forEach(function(h,i){ str(i,HA,h,7); });
+    A.forEach(function(a,j){
+      var r=FA+j, cl=xlCol(4+j);
+      str(0,r,a.name,8);
+      num(1,r,Math.round(a.pct*1e4)/1e6,10);
+      fml(2,r,cl+T,xlR2(areaTot[j]),9);
+      fml(3,r,'IF($C$'+TA+'=0,0,C'+r+'/$C$'+TA+')', totalPunto? areaTot[j]/totalPunto : 0, 10);
+    });
+    str(0,TA,'TOTAL',11);
+    fml(1,TA,'SUM(B'+FA+':B'+LA+')',Math.round(tp*1e4)/1e6,13);
+    fml(2,TA,'SUM(C'+FA+':C'+LA+')',xlR2(totalPunto),12);
+    fml(3,TA,'SUM(D'+FA+':D'+LA+')',totalPunto?1:0,13);
+
+    var note = TA+2;
+    str(0,note,'Las gráficas están a la derecha y debajo de las tablas. Generado con Reparto de Punto.',2);
+
+    // Hoja
+    var rowNums = Object.keys(rows).map(Number).sort(function(a,b){ return a-b; });
+    var sheetData = rowNums.map(function(r){
+      var cells = rows[r].sort(function(a,b){ return a.c-b.c; }).map(function(o){ return o.x; }).join('');
+      var ht = r===1 ? ' ht="30" customHeight="1"' : (r===2 ? ' ht="18" customHeight="1"' : (r===H||r===HA ? ' ht="30" customHeight="1"' : ''));
+      return '<row r="'+r+'"'+ht+'>'+cells+'</row>';
+    }).join('');
+    var widths=[26,15,15,15].concat(A.map(function(){ return 15; }));
+    var cols = '<cols>'+widths.map(function(w,i){ return '<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>'; }).join('')+'<col min="'+(lastCol+2)+'" max="'+(lastCol+2)+'" width="3" customWidth="1"/></cols>';
+    var sheet = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'+
+      '<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>'+
+      '<sheetViews><sheetView workbookViewId="0" showGridLines="0"><pane ySplit="2" topLeftCell="A3" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>'+
+      '<sheetFormatPr defaultRowHeight="16" customHeight="1"/>'+cols+
+      '<sheetData>'+sheetData+'</sheetData>'+
+      '<mergeCells count="2"><mergeCell ref="A1:'+xlCol(lastCol)+'1"/><mergeCell ref="A2:'+xlCol(lastCol)+'2"/></mergeCells>'+
+      '<conditionalFormatting sqref="C'+F+':C'+L+'"><cfRule type="dataBar" priority="1"><dataBar><cfvo type="num" val="0"/><cfvo type="num" val="1"/><color rgb="FFE8A08A"/></dataBar></cfRule></conditionalFormatting>'+
+      '<conditionalFormatting sqref="D'+FA+':D'+LA+'"><cfRule type="dataBar" priority="2"><dataBar><cfvo type="num" val="0"/><cfvo type="num" val="1"/><color rgb="FF9DC3E6"/></dataBar></cfRule></conditionalFormatting>'+
+      '<pageMargins left="0.4" right="0.4" top="0.5" bottom="0.5" header="0.3" footer="0.3"/>'+
+      '<pageSetup orientation="landscape" fitToWidth="1" fitToHeight="0"/>'+
+      '<drawing r:id="rId1"/></worksheet>';
+
+    // Gráfica 1: pastel de participación por mesero
+    var names = M.map(function(m){ return m.name; });
+    var catM = S+'!$A$'+F+':$A$'+L;
+    var pie = '<c:pieChart><c:varyColors val="1"/><c:ser><c:idx val="0"/><c:order val="0"/><c:tx><c:v>Venta</c:v></c:tx>'+
+      M.map(function(m,i){ return '<c:dPt><c:idx val="'+i+'"/><c:bubble3D val="0"/><c:spPr><a:solidFill><a:srgbClr val="'+XL_MESERO_COLORS[i%XL_MESERO_COLORS.length]+'"/></a:solidFill><a:ln w="19050"><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></a:ln></c:spPr></c:dPt>'; }).join('')+
+      '<c:dLbls><c:numFmt formatCode="0.0%" sourceLinked="0"/><c:spPr><a:noFill/><a:ln><a:noFill/></a:ln></c:spPr>'+xlTxPr(1000,'1C1C1E',true)+
+      '<c:dLblPos val="outEnd"/><c:showLegendKey val="0"/><c:showVal val="0"/><c:showCatName val="1"/><c:showSerName val="0"/><c:showPercent val="1"/><c:showBubbleSize val="0"/><c:separator>\n</c:separator><c:showLeaderLines val="1"/></c:dLbls>'+
+      '<c:cat>'+xlStrRef(catM,names)+'</c:cat><c:val>'+xlNumRef(S+'!$B$'+F+':$B$'+L, M.map(function(m){ return m.venta; }))+'</c:val></c:ser>'+
+      '<c:firstSliceAng val="0"/></c:pieChart>';
+    var chart1 = xlChartDoc('Participación de cada mesero en la venta', pie, null);
+
+    // Gráfica 2: columnas por área
+    var areaNames = A.map(function(a){ return a.name; });
+    var col = '<c:barChart><c:barDir val="col"/><c:grouping val="clustered"/><c:varyColors val="0"/>'+
+      '<c:ser><c:idx val="0"/><c:order val="0"/><c:tx><c:v>Monto</c:v></c:tx>'+xlFill('C2461B')+'<c:invertIfNegative val="0"/>'+
+      A.map(function(a,j){ return '<c:dPt><c:idx val="'+j+'"/><c:invertIfNegative val="0"/><c:bubble3D val="0"/>'+xlFill(XL_AREA_COLORS[j%5])+'</c:dPt>'; }).join('')+
+      '<c:dLbls><c:numFmt formatCode="&quot;$&quot;#,##0.00" sourceLinked="0"/><c:spPr><a:noFill/><a:ln><a:noFill/></a:ln></c:spPr>'+xlTxPr(900,'1C1C1E',true)+
+      '<c:dLblPos val="outEnd"/><c:showLegendKey val="0"/><c:showVal val="1"/><c:showCatName val="0"/><c:showSerName val="0"/><c:showPercent val="0"/><c:showBubbleSize val="0"/></c:dLbls>'+
+      '<c:cat>'+xlStrRef(S+'!$A$'+FA+':$A$'+LA, areaNames)+'</c:cat><c:val>'+xlNumRef(S+'!$C$'+FA+':$C$'+LA, areaTot)+'</c:val></c:ser>'+
+      '<c:gapWidth val="55"/><c:axId val="5001"/><c:axId val="5002"/></c:barChart>'+xlAxes('b','l','"$"#,##0');
+    var chart2 = xlChartDoc('Punto por área ('+pctLbl+' de la venta)', col, null);
+
+    // Gráfica 3: barras apiladas, cuánto aporta cada mesero a cada área
+    var stack = '<c:barChart><c:barDir val="bar"/><c:grouping val="stacked"/><c:varyColors val="0"/>'+
+      A.map(function(a,j){
+        var cl=xlCol(4+j);
+        return '<c:ser><c:idx val="'+j+'"/><c:order val="'+j+'"/><c:tx>'+xlStrRef(S+'!$'+cl+'$'+H, [heads[4+j]])+'</c:tx>'+xlFill(XL_AREA_COLORS[j%5])+'<c:invertIfNegative val="0"/>'+
+          '<c:cat>'+xlStrRef(catM,names)+'</c:cat><c:val>'+xlNumRef(S+'!$'+cl+'$'+F+':$'+cl+'$'+L, M.map(function(m){ return m.venta*a.pct/100; }))+'</c:val></c:ser>';
+      }).join('')+
+      '<c:gapWidth val="50"/><c:overlap val="100"/><c:axId val="5001"/><c:axId val="5002"/></c:barChart>'+xlAxes('l','b','"$"#,##0');
+    var chart3 = xlChartDoc('Punto de cada mesero repartido por área', stack, 'b');
+
+    // Dibujo con las 3 gráficas
+    function anchor(id, c1, r1, c2, r2){
+      return '<xdr:twoCellAnchor editAs="oneCell"><xdr:from><xdr:col>'+c1+'</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>'+r1+'</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from>'+
+        '<xdr:to><xdr:col>'+c2+'</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>'+r2+'</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to>'+
+        '<xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="'+(id+1)+'" name="Gráfica '+id+'"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr>'+
+        '<xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">'+
+        '<c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" r:id="rId'+id+'"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/></xdr:twoCellAnchor>';
+    }
+    var cx = lastCol+2, stackRows = Math.max(16, n*2+8);
+    var drawing = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+      '<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'+
+      anchor(1, cx, 2, cx+7, 22)+anchor(2, cx, 23, cx+7, 41)+anchor(3, 0, TA+3, lastCol+1, TA+3+stackRows)+'</xdr:wsDr>';
+
+    var R='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+    var CT='application/vnd.openxmlformats-officedocument.';
+    var styles = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+      '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'+
+      '<numFmts count="2"><numFmt numFmtId="164" formatCode="&quot;$&quot;#,##0.00"/><numFmt numFmtId="165" formatCode="0.0%"/></numFmts>'+
+      '<fonts count="8">'+
+        '<font><sz val="11"/><color rgb="FF1C1C1E"/><name val="Calibri"/><family val="2"/></font>'+
+        '<font><b/><sz val="16"/><color rgb="FFFFFFFF"/><name val="Calibri"/><family val="2"/></font>'+
+        '<font><i/><sz val="10"/><color rgb="FF6C6C70"/><name val="Calibri"/><family val="2"/></font>'+
+        '<font><b/><sz val="11"/><color rgb="FF1C1C1E"/><name val="Calibri"/><family val="2"/></font>'+
+        '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/><family val="2"/></font>'+
+        '<font><b/><sz val="12"/><color rgb="FFC2461B"/><name val="Calibri"/><family val="2"/></font>'+
+        '<font><b/><sz val="14"/><color rgb="FF1C1C1E"/><name val="Calibri"/><family val="2"/></font>'+
+        '<font><b/><sz val="14"/><color rgb="FFC2461B"/><name val="Calibri"/><family val="2"/></font>'+
+      '</fonts>'+
+      '<fills count="5"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>'+
+        '<fill><patternFill patternType="solid"><fgColor rgb="FFC2461B"/><bgColor indexed="64"/></patternFill></fill>'+
+        '<fill><patternFill patternType="solid"><fgColor rgb="FF2B2B2E"/><bgColor indexed="64"/></patternFill></fill>'+
+        '<fill><patternFill patternType="solid"><fgColor rgb="FFF6EEE8"/><bgColor indexed="64"/></patternFill></fill></fills>'+
+      '<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>'+
+        '<border><left style="thin"><color rgb="FFD9D9D9"/></left><right style="thin"><color rgb="FFD9D9D9"/></right><top style="thin"><color rgb="FFD9D9D9"/></top><bottom style="thin"><color rgb="FFD9D9D9"/></bottom><diagonal/></border></borders>'+
+      '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'+
+      '<cellXfs count="15">'+
+        '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'+
+        '<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center" indent="1"/></xf>'+
+        '<xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="center"/></xf>'+
+        '<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1"/>'+
+        '<xf numFmtId="164" fontId="6" fillId="0" borderId="0" xfId="0" applyNumberFormat="1" applyFont="1"/>'+
+        '<xf numFmtId="1" fontId="6" fillId="0" borderId="0" xfId="0" applyNumberFormat="1" applyFont="1" applyAlignment="1"><alignment horizontal="right"/></xf>'+
+        '<xf numFmtId="0" fontId="5" fillId="0" borderId="0" xfId="0" applyFont="1"/>'+
+        '<xf numFmtId="0" fontId="4" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>'+
+        '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"/>'+
+        '<xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1"/>'+
+        '<xf numFmtId="165" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1"/>'+
+        '<xf numFmtId="0" fontId="3" fillId="4" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"/>'+
+        '<xf numFmtId="164" fontId="3" fillId="4" borderId="1" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1"/>'+
+        '<xf numFmtId="165" fontId="3" fillId="4" borderId="1" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1"/>'+
+        '<xf numFmtId="164" fontId="7" fillId="0" borderId="0" xfId="0" applyNumberFormat="1" applyFont="1"/>'+
+      '</cellXfs>'+
+      '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles><dxfs count="0"/><tableStyles count="0"/>'+
+      '</styleSheet>';
+
+    return {
+      '[Content_Types].xml': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'+
+        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>'+
+        '<Override PartName="/xl/workbook.xml" ContentType="'+CT+'spreadsheetml.sheet.main+xml"/>'+
+        '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="'+CT+'spreadsheetml.worksheet+xml"/>'+
+        '<Override PartName="/xl/styles.xml" ContentType="'+CT+'spreadsheetml.styles+xml"/>'+
+        '<Override PartName="/xl/drawings/drawing1.xml" ContentType="'+CT+'drawing+xml"/>'+
+        [1,2,3].map(function(i){ return '<Override PartName="/xl/charts/chart'+i+'.xml" ContentType="'+CT+'drawingml.chart+xml"/>'; }).join('')+
+        '</Types>',
+      '_rels/.rels': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="'+R+'/officeDocument" Target="xl/workbook.xml"/></Relationships>',
+      'xl/workbook.xml': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="'+R+'"><bookViews><workbookView/></bookViews><sheets><sheet name="'+S+'" sheetId="1" r:id="rId1"/></sheets><calcPr calcId="191029" fullCalcOnLoad="1"/></workbook>',
+      'xl/_rels/workbook.xml.rels': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="'+R+'/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="'+R+'/styles" Target="styles.xml"/></Relationships>',
+      'xl/styles.xml': styles,
+      'xl/worksheets/sheet1.xml': sheet,
+      'xl/worksheets/_rels/sheet1.xml.rels': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="'+R+'/drawing" Target="../drawings/drawing1.xml"/></Relationships>',
+      'xl/drawings/drawing1.xml': drawing,
+      'xl/drawings/_rels/drawing1.xml.rels': '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
+        [1,2,3].map(function(i){ return '<Relationship Id="rId'+i+'" Type="'+R+'/chart" Target="../charts/chart'+i+'.xml"/>'; }).join('')+'</Relationships>',
+      'xl/charts/chart1.xml': chart1,
+      'xl/charts/chart2.xml': chart2,
+      'xl/charts/chart3.xml': chart3
+    };
+  }
+  function buildReporteXlsx(model){ return zipStore(buildReporteFiles(model)); }
+
+  function meserosConVenta(){
+    var out = [];
+    meseros.forEach(function(m, i){
+      var v = parseNum(m.venta);
+      if(v > 0) out.push({ name: (m.name && m.name.trim()) ? m.name.trim() : ('Mesero ' + (i+1)), venta: v, k: out.length, i: i });
+    });
+    return out;
+  }
+
+  function flashLabel(btn, msg, ms){
+    var lbl = btn.querySelector('.t') || btn.querySelector('.label') || btn;
+    if(!btn.dataset.orig) btn.dataset.orig = lbl.textContent;
+    lbl.textContent = msg;
+    clearTimeout(btn._t);
+    btn._t = setTimeout(function(){ lbl.textContent = btn.dataset.orig; }, ms || 1800);
+  }
+
+  // ---- Descarga del reporte ----
+  var reportBtn = document.getElementById('reportBtn');
+  var dlPromise = null;
+  var XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  // Fuera de claude.ai: en el celular abre el menú de compartir (Guardar en Archivos, WhatsApp…); en la compu lo descarga.
+  var localDownloads = {
+    save: function(o){
+      var blob = new Blob([o.data], { type: XLSX_MIME });
+      var file = null;
+      try { file = new File([blob], o.filename, { type: XLSX_MIME }); } catch(e){}
+      var touch = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+      if(touch && file && navigator.canShare && navigator.canShare({ files: [file] })){
+        return navigator.share({ files: [file], title: o.filename }).catch(function(err){
+          throw { code: (err && err.name === 'AbortError') ? 'declined' : 'failed' };
+        });
       }
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = o.filename;
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      return Promise.resolve();
+    }
+  };
+  function getDownloads(){
+    if(!dlPromise){
+      var host = window.claude;
+      if(!host){ try { if(window.parent !== window) host = window.parent.claude; } catch(e){} }
+      dlPromise = (host && typeof host.use === 'function')
+        ? Promise.resolve(host.use('downloads')).catch(function(){ return localDownloads; })
+        : Promise.resolve(localDownloads);
+    }
+    return dlPromise;
+  }
+  window.addEventListener('load', function(){
+    setTimeout(function(){ getDownloads().then(function(d){ if(!d) reportBtn.hidden = true; }); }, 600);
+  });
+  reportBtn.addEventListener('click', function(){
+    var lista = meserosConVenta();
+    if(!lista.length){ flashLabel(reportBtn, 'Captura al menos una venta', 2200); return; }
+    var hoy = new Date();
+    var model = {
+      fechaLarga: hoy.toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' }),
+      totalPct: sumPct(),
+      areas: areas.map(function(a){ return { name: a.name, pct: a.pct }; }),
+      meseros: lista.map(function(x){ return { name: x.name, venta: x.venta }; })
+    };
+    var iso = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
+    var bytes;
+    try { bytes = buildReporteXlsx(model); } catch(e){ flashLabel(reportBtn, 'No se pudo crear el reporte', 2400); return; }
+    getDownloads().then(function(d){
+      if(!d){ reportBtn.hidden = true; return; }
+      return d.save({ filename: 'Reparto de punto ' + iso + '.xlsx', data: bytes }).then(function(){
+        flashLabel(reportBtn, 'Reporte listo', 2200);
+      }, function(err){
+        var code = err && err.code;
+        if(code === 'declined') flashLabel(reportBtn, 'Descarga cancelada', 1800);
+        else if(code === 'rate_limited') flashLabel(reportBtn, 'Espera un momento y vuelve a intentar', 2600);
+        else flashLabel(reportBtn, 'La descarga no está disponible aquí', 2600);
+      });
     });
-    document.getElementById('installClose').addEventListener('click', function(){
-      save(LS_HIDE, Date.now() + 3*24*60*60*1000);
-      bar.hidden = true;
-    });
-    document.getElementById('iosOk').addEventListener('click', function(){ sheet.hidden = true; });
-    sheet.addEventListener('click', function(e){ if(e.target === sheet) sheet.hidden = true; });
+  });
+
+  // ---- Barra de arriba al hacer scroll ----
+  function onScroll(){ document.documentElement.classList.toggle('scrolled', (window.scrollY || 0) > 70); }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  // ---- Mismo tema (claro/oscuro) que el marco del teléfono ----
+  (function(){
+    try {
+      if(window.parent === window) return;
+      var pr = window.parent.document.documentElement;
+      var sync = function(){ var t = pr.getAttribute('data-theme'); if(t) document.documentElement.setAttribute('data-theme', t); else document.documentElement.removeAttribute('data-theme'); };
+      sync(); new MutationObserver(sync).observe(pr, { attributes: true, attributeFilter: ['data-theme'] });
+    } catch(e){}
   })();
 
-  if('serviceWorker' in navigator && location.protocol === 'https:'){
-    navigator.serviceWorker.register('sw.js').catch(function(){});
-  }
-
+  (function(){
+    var f = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long' });
+    document.getElementById('todayLbl').textContent = 'Sala de Despecho · ' + f.charAt(0).toUpperCase() + f.slice(1);
+  })();
   renderPcts();
   renderMeseros();
   recalc();
+
+  // Guarda la app en el teléfono para que abra aunque no haya señal.
+  if('serviceWorker' in navigator && location.protocol === 'https:'){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  }
 </script>
+</body>
+</html>
