@@ -1,7 +1,9 @@
 // Guarda la app en el teléfono para que abra aunque no haya señal en el bar.
 // Primero intenta la red (para recibir actualizaciones) y si falla usa la copia guardada.
 var CACHE = 'punto-v5';
-var FILES = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
+var VISTA = './visualizacion-reparto-de-punto/';
+var FILES = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png',
+             VISTA, VISTA + 'index.html', VISTA + 'manifest.webmanifest'];
 
 self.addEventListener('install', function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(FILES); }));
@@ -25,7 +27,11 @@ self.addEventListener('fetch', function(e){
       }
       return res;
     }).catch(function(){
-      return caches.match(e.request).then(function(hit){ return hit || caches.match('./index.html'); });
+      return caches.match(e.request).then(function(hit){
+        if(hit) return hit;
+        var enVista = new URL(e.request.url).pathname.indexOf('/visualizacion-reparto-de-punto/') !== -1;
+        return caches.match(enVista ? VISTA + 'index.html' : './index.html');
+      });
     })
   );
 });

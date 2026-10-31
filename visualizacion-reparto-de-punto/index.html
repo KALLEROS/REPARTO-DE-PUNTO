@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-title" content="Vista Punto">
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<title>Visualización · Reparto de Punto</title>
+<link rel="apple-touch-icon" href="../icon-180.png">
+<link rel="icon" type="image/png" href="../icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  /* Visualización de solo lectura: muestra los cortes que llegan por link desde la app de captura.
+     Mismo estilo de iPhone que la app principal (listas agrupadas, título grande, barra translúcida). */
+  :root {
+    --bg: #f2f2f7;
+    --surface: #ffffff;
+    --fill: #e9e9ee;
+    --fg: #1c1c1e;
+    --muted: #6c6c70;
+    --sep: #dcdce0;
+    --tint: #b8421a;
+    --tint-soft: #f9e6dd;
+    --on-tint: #ffffff;
+    --bar: rgba(242, 242, 247, .82);
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-round: ui-rounded, -apple-system, "SF Pro Rounded", system-ui, "Segoe UI", sans-serif;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --surface: #1c1c1e;
+      --fill: #2c2c2e;
+      --fg: #ffffff;
+      --muted: #98989f;
+      --sep: #38383a;
+      --tint: #ff8a5c;
+      --tint-soft: #3a2117;
+      --on-tint: #1c0c05;
+      --bar: rgba(18, 18, 20, .8);
+      color-scheme: dark;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; min-height: 100vh; overscroll-behavior-y: none;
+    background: var(--bg); color: var(--fg);
+    font-family: var(--font); font-size: 17px; line-height: 1.3; letter-spacing: -.01em;
+    -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
+  }
+  [hidden] { display: none !important; }
+  button { font: inherit; letter-spacing: inherit; }
+  :focus-visible { outline: 2px solid var(--tint); outline-offset: 2px; }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  .sbar { position: sticky; top: 0; z-index: 6; height: var(--safe-top); background: var(--bg); transition: background-color .2s; }
+  .navbar {
+    position: sticky; top: var(--safe-top); z-index: 5; height: 44px; display: grid; place-items: center;
+    padding-inline: 16px; transition: background-color .2s, box-shadow .2s;
+  }
+  .navbar .ntitle { font-weight: 600; font-size: 17px; opacity: 0; transition: opacity .2s; }
+  .scrolled .sbar, .scrolled .navbar {
+    background: var(--bar); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+  }
+  .scrolled .navbar { box-shadow: 0 1px 0 var(--sep); }
+  .scrolled .navbar .ntitle { opacity: 1; }
+  .content {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0 calc(24px + var(--safe-bottom));
+    max-width: 560px; margin: 0 auto;
+  }
+
+  .large { padding: 2px 4px 16px; }
+  h1 { margin: 0; font-size: 34px; line-height: 1.12; font-weight: 700; letter-spacing: -.02em; text-wrap: balance; }
+  .subline { margin: 2px 0 0; font-size: 15px; font-weight: 600; color: var(--tint); }
+  .lead { margin: 6px 0 0; font-size: 15px; color: var(--muted); max-width: 46ch; line-height: 1.38; text-wrap: pretty; }
+
+  /* Selector de día */
+  .days { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 2px; scroll-padding-inline: 16px; }
+  .days::-webkit-scrollbar { display: none; }
+  .day {
+    flex: none; border: 0; border-radius: 999px; padding: 8px 14px; cursor: pointer;
+    background: var(--surface); color: var(--fg); font-size: 15px; font-weight: 600; white-space: nowrap;
+  }
+  .day[aria-pressed="true"] { background: var(--tint); color: var(--on-tint); }
+
+  .when { margin: 18px 4px 10px; }
+  .when h2 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -.01em; }
+  .when p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tile { background: var(--surface); border-radius: 14px; padding: 12px 14px 14px; min-width: 0; }
+  .tile .k { font-size: 13px; font-weight: 600; color: var(--muted); }
+  .tile .v {
+    font-family: var(--font-round); font-weight: 700; font-size: 24px; letter-spacing: -.02em;
+    margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .tile .s { font-size: 13px; color: var(--muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .tile.hot { background: var(--tint); color: var(--on-tint); }
+  .tile.hot .k, .tile.hot .s { color: var(--on-tint); }
+
+  .sec { margin-top: 26px; }
+  .sec-head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+    padding: 0 16px 7px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .01em;
+  }
+  .sec-foot { padding: 7px 16px 0; font-size: 13px; color: var(--muted); line-height: 1.38; text-wrap: pretty; }
+  .group { background: var(--surface); border-radius: 12px; overflow: hidden; }
+  .row { position: relative; display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 10px 16px; }
+  .row + .row::before { content: ""; position: absolute; top: 0; left: 16px; right: 0; height: 1px; background: var(--sep); }
+  .row .label { flex: 1; min-width: 0; display: grid; gap: 1px; }
+  .row .sub { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .row .val { font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
+  button.row { width: 100%; border: 0; background: transparent; color: var(--fg); text-align: left; cursor: pointer; }
+  button.row:active, button.row[aria-current="true"] { background: var(--fill); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+  .row.part { flex-direction: column; align-items: stretch; gap: 6px; padding-block: 12px; }
+  .part-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .part-top .pname { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  .part-top .pval { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; }
+  .part-sub { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .track { height: 10px; border-radius: 5px; background: var(--fill); overflow: hidden; }
+  .track span { display: block; height: 100%; border-radius: 5px; }
+
+  .donut-row { display: flex; align-items: center; gap: 18px; padding: 16px; }
+  .donut { width: 132px; height: 132px; flex: none; }
+  .donut .bg { stroke: var(--fill); }
+  .donut .c-num { font: 700 30px var(--font-round); fill: var(--fg); }
+  .donut .c-lbl { font: 600 11px var(--font); fill: var(--muted); }
+  .hl { min-width: 0; display: grid; gap: 12px; flex: 1; }
+  .hl .k { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .02em; }
+  .hl .v { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .hl .s { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .empty-state { background: var(--surface); border-radius: 14px; padding: 22px 18px; text-align: center; }
+  .empty-state b { display: block; font-size: 17px; margin-bottom: 6px; }
+  .empty-state p { margin: 0; font-size: 15px; color: var(--muted); line-height: 1.4; text-wrap: pretty; }
+  .foot-note { text-align: center; font-size: 12px; color: var(--muted); margin: 22px 0 0; line-height: 1.4; text-wrap: pretty; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(20px + var(--safe-bottom)); transform: translateX(-50%); z-index: 50;
+    max-width: calc(100% - 32px); padding: 10px 16px; border-radius: 999px; text-align: center;
+    background: var(--fg); color: var(--bg); font-size: 15px; font-weight: 600; box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  }
+</style>
+</head>
+<body>
+<div class="sbar" aria-hidden="true"></div>
+<nav class="navbar"><span class="ntitle">Visualización</span></nav>
+
+<main class="content">
+  <header class="large">
+    <h1>Reparto de Punto</h1>
+    <p class="subline">Sala de Despecho · Visualización</p>
+    <p class="lead">Resultados de cada corte: venta, punto y lo que le toca a cada área. Solo para consultar.</p>
+  </header>
+
+  <div class="empty-state" id="empty" hidden>
+    <b>Todavía no hay cortes</b>
+    <p>Quien hace el cierre te manda por WhatsApp el link del corte. Ábrelo y el día aparece aquí.</p>
+  </div>
+
+  <div id="view" hidden>
+    <nav class="days" id="days" aria-label="Elegir corte"></nav>
+
+    <div class="when"><h2 id="whenTitle"></h2><p id="whenSub"></p></div>
+
+    <div class="tiles">
+      <div class="tile"><div class="k">Venta total</div><div class="v tnum" id="tVenta"></div><div class="s" id="tVentaSub"></div></div>
+      <div class="tile hot"><div class="k">Punto total</div><div class="v tnum" id="tPunto"></div><div class="s" id="tPuntoSub"></div></div>
+    </div>
+
+    <section class="sec">
+      <div class="sec-head"><span>Reparto por área</span><span id="areasRate"></span></div>
+      <div class="group" id="areas"></div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head"><span>Aportación por mesero</span><span>Sin nombres</span></div>
+      <div class="group" id="meseros"></div>
+      <p class="sec-foot">Ordenados de mayor a menor venta. Los nombres se quedan en el teléfono de quien captura.</p>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head"><span>Historial</span><span id="histCount"></span></div>
+      <div class="group" id="hist"></div>
+    </section>
+  </div>
+
+  <p class="foot-note">Los cortes llegan por link desde la app de captura y se guardan en este teléfono.<br>Cada link trae también los 6 cortes anteriores.</p>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+  var MXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function money(n){ return MXN.format(isFinite(n) ? n : 0); }
+  function pct1(x){ return (Math.round(x*1000)/10).toFixed(1) + '%'; }
+  function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+  var AREA_COLORS = ['#8e8e93', '#ff9f0a', '#0a84ff', '#bf5af2', '#30b0c7'];
+  var MESERO_COLORS = ['#c2461b','#3a7ca5','#e39b2d','#5b8c5a','#7a5c99','#b5495b','#2e8b87','#9c6b3f','#4f6d8f','#d06d3a','#6e6e73','#8da33b'];
+
+  var LS_CORTES = 'rpv_cortes_v1', MAX_CORTES = 90;
+  function load(){ try { var v = JSON.parse(localStorage.getItem(LS_CORTES)); if(Array.isArray(v)) return v; } catch(e){} return []; }
+  function save(){ try { localStorage.setItem(LS_CORTES, JSON.stringify(cortes)); } catch(e){} }
+
+  // Un corte: { id: timestamp del corte, j: 'AAAA-MM-DD' (jornada), a: [[área, %], …], m: [venta, …] de mayor a menor }
+  function valido(c){
+    return c && typeof c.id === 'number' && /^\d{4}-\d{2}-\d{2}$/.test(c.j) &&
+      Array.isArray(c.a) && c.a.every(function(x){ return Array.isArray(x) && typeof x[0] === 'string' && typeof x[1] === 'number'; }) &&
+      Array.isArray(c.m) && c.m.every(function(x){ return typeof x === 'number' && isFinite(x); });
+  }
+
+  // Lee el link (#c=…) que manda la app de captura y lo junta con lo guardado.
+  function importar(){
+    var mt = /[#&]c=([A-Za-z0-9_-]+)/.exec(location.hash);
+    if(!mt) return null;
+    try {
+      var b64 = mt[1].replace(/-/g, '+').replace(/_/g, '/');
+      var bin = atob(b64 + '==='.slice((b64.length + 3) % 4));
+      var bytes = new Uint8Array(bin.length);
+      for(var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      var data = JSON.parse(new TextDecoder().decode(bytes));
+      if(!data || data.v !== 1 || !Array.isArray(data.c)) throw 0;
+      var nuevos = data.c.filter(valido);
+      if(!nuevos.length) throw 0;
+      var ids = {}; nuevos.forEach(function(c){ ids[c.id] = 1; });
+      cortes = nuevos.concat(cortes.filter(function(c){ return !ids[c.id]; }))
+        .sort(function(a, b){ return b.id - a.id; }).slice(0, MAX_CORTES);
+      save();
+      return nuevos[0];
+    } catch(e){
+      toast('Ese link no se pudo leer');
+      return null;
+    } finally {
+      try { history.replaceState(null, '', location.pathname + location.search); } catch(e){}
+    }
+  }
+
+  function fecha(iso, opts){
+    var p = iso.split('-');
+    var f = new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString('es-MX', opts);
+    return f.charAt(0).toUpperCase() + f.slice(1);
+  }
+  function fechaLarga(iso){ return fecha(iso, { weekday:'long', day:'numeric', month:'long' }); }
+  function fechaCorta(iso){ return fecha(iso, { weekday:'short', day:'numeric', month:'short' }).replace(/\./g, ''); }
+  function totales(c){
+    var venta = c.m.reduce(function(s, v){ return s + v; }, 0);
+    var pct = c.a.reduce(function(s, a){ return s + a[1]; }, 0);
+    return { venta: venta, pct: pct, punto: venta*pct/100, n: c.m.length };
+  }
+  function bar(share, color){
+    return '<div class="track"><span style="width:'+Math.max(0, Math.min(100, share*100)).toFixed(2)+'%;background:'+color+'"></span></div>';
+  }
+
+  var cortes = load();
+  var sel = null;
+
+  function render(){
+    var hay = cortes.length > 0;
+    document.getElementById('empty').hidden = hay;
+    document.getElementById('view').hidden = !hay;
+    if(!hay) return;
+    var c = cortes.find(function(x){ return x.id === sel; }) || cortes[0];
+    sel = c.id;
+    var t = totales(c), pctR = Math.round(t.pct*100)/100;
+
+    document.getElementById('days').innerHTML = cortes.slice(0, 14).map(function(x){
+      return '<button class="day" data-id="'+x.id+'" aria-pressed="'+(x.id === sel)+'">'+esc(fechaCorta(x.j))+'</button>';
+    }).join('');
+
+    document.getElementById('whenTitle').textContent = fechaLarga(c.j);
+    document.getElementById('whenSub').textContent = 'Corte de las ' + new Date(c.id).toLocaleTimeString('es-MX', { hour:'numeric', minute:'2-digit' });
+    document.getElementById('tVenta').textContent = money(t.venta);
+    document.getElementById('tVentaSub').textContent = t.n + (t.n === 1 ? ' mesero con venta' : ' meseros con venta');
+    document.getElementById('tPunto').textContent = money(t.punto);
+    document.getElementById('tPuntoSub').textContent = pctR + '% de la venta';
+    document.getElementById('areasRate').textContent = pctR + '% de la venta';
+
+    document.getElementById('areas').innerHTML = c.a.map(function(a, i){
+      var share = t.pct ? a[1]/t.pct : 0, color = AREA_COLORS[i % AREA_COLORS.length];
+      return '<div class="row part">'+
+        '<div class="part-top"><span class="pname"><span class="dot" style="background:'+color+'"></span>'+esc(a[0])+'</span>'+
+          '<span class="pval">'+money(t.venta*a[1]/100)+'</span></div>'+
+        bar(share, color)+
+        '<div class="part-sub"><span>'+a[1]+'% de la venta</span><span>'+pct1(share)+' del punto</span></div>'+
+      '</div>';
+    }).join('');
+
+    var R = 48, C = 2*Math.PI*R, off = 0, gap = t.n > 1 ? 2 : 0;
+    var arcs = c.m.map(function(v, k){
+      var share = t.venta ? v/t.venta : 0, len = Math.max(0.5, share*C - gap);
+      var arc = '<circle cx="60" cy="60" r="'+R+'" fill="none" stroke="'+MESERO_COLORS[k % MESERO_COLORS.length]+'" stroke-width="18" transform="rotate(-90 60 60)" '+
+        'stroke-dasharray="'+len.toFixed(2)+' '+C.toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'"/>';
+      off += share*C;
+      return arc;
+    }).join('');
+    var top = c.m[0] || 0;
+    document.getElementById('meseros').innerHTML =
+      '<div class="row donut-row">'+
+        '<svg class="donut" viewBox="0 0 120 120" role="img" aria-label="Participación de cada mesero en la venta">'+
+          '<circle class="bg" cx="60" cy="60" r="'+R+'" fill="none" stroke-width="18"/>'+arcs+
+          '<text class="c-num" x="60" y="62" text-anchor="middle">'+t.n+'</text>'+
+          '<text class="c-lbl" x="60" y="78" text-anchor="middle">'+(t.n === 1 ? 'mesero' : 'meseros')+'</text>'+
+        '</svg>'+
+        '<div class="hl">'+
+          '<div><div class="k">Mayor aportación</div><div class="v">'+(t.venta ? pct1(top/t.venta) : '—')+'</div><div class="s">'+money(top)+' de venta</div></div>'+
+          '<div><div class="k">Promedio por mesero</div><div class="v">'+money(t.n ? t.venta/t.n : 0)+'</div></div>'+
+        '</div>'+
+      '</div>'+
+      c.m.map(function(v, k){
+        var share = t.venta ? v/t.venta : 0, color = MESERO_COLORS[k % MESERO_COLORS.length];
+        return '<div class="row part">'+
+          '<div class="part-top"><span class="pname"><span class="dot" style="background:'+color+'"></span>Mesero '+(k+1)+'</span>'+
+            '<span class="pval">'+pct1(share)+'</span></div>'+
+          bar(share, color)+
+          '<div class="part-sub"><span>Venta '+money(v)+'</span><span>Punto '+money(v*t.pct/100)+'</span></div>'+
+        '</div>';
+      }).join('');
+
+    var n = cortes.length;
+    document.getElementById('histCount').textContent = n + (n === 1 ? ' corte' : ' cortes');
+    document.getElementById('hist').innerHTML = cortes.map(function(x){
+      var tx = totales(x);
+      return '<button class="row" data-id="'+x.id+'" aria-current="'+(x.id === sel)+'">'+
+        '<span class="label"><span>'+esc(fechaLarga(x.j))+'</span><span class="sub">'+tx.n+(tx.n === 1 ? ' mesero' : ' meseros')+' · punto '+money(tx.punto)+'</span></span>'+
+        '<span class="val">'+money(tx.venta)+'</span></button>';
+    }).join('');
+  }
+
+  function elegir(e){
+    var b = e.target.closest('[data-id]');
+    if(!b) return;
+    sel = +b.getAttribute('data-id');
+    render();
+    if(e.currentTarget.id === 'hist') window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  document.getElementById('days').addEventListener('click', elegir);
+  document.getElementById('hist').addEventListener('click', elegir);
+
+  var toastEl = document.getElementById('toast'), toastT = null;
+  function toast(msg){
+    toastEl.textContent = msg; toastEl.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 2800);
+  }
+
+  function onScroll(){ document.documentElement.classList.toggle('scrolled', (window.scrollY || 0) > 70); }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  function alAbrir(){
+    var nuevo = importar();
+    if(nuevo){ sel = nuevo.id; toast('Corte del ' + fechaLarga(nuevo.j).toLowerCase() + ' agregado'); }
+    render();
+  }
+  window.addEventListener('hashchange', alAbrir);
+  alAbrir();
+
+  // Comparte el modo sin señal de la app principal.
+  if('serviceWorker' in navigator && location.protocol === 'https:'){
+    navigator.serviceWorker.register('../sw.js').catch(function(){});
+  }
+</script>
+</body>
+</html>
