@@ -309,6 +309,30 @@
   .sheet button.destroy { color: var(--danger); }
   .sheet .cancel { border-top: 0; border-radius: 14px; font-weight: 600; }
 
+  /* ---------- Historial de cortes ---------- */
+  details.hist > summary { list-style: none; cursor: pointer; }
+  details.hist > summary::-webkit-details-marker { display: none; }
+  details.hist + details.hist > summary::before {
+    content: ""; position: absolute; top: 0; left: 16px; right: 0; height: 1px; background: var(--sep);
+  }
+  details.hist > summary .label { display: grid; gap: 1px; }
+  details.hist > summary .sub { font-size: 13px; color: var(--muted); }
+  details.hist[open] > summary { background: var(--fill); }
+  .hist-body { box-shadow: inset 0 1px 0 var(--sep); }
+  .hist-k { min-height: 32px; padding-block: 10px 2px; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .02em; }
+  .hist-actions { display: flex; gap: 10px; padding: 10px 16px 14px; }
+  .hist-actions button {
+    flex: 1; border: 0; border-radius: 10px; padding: 11px 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+    background: var(--tint-soft); color: var(--tint);
+  }
+  .hist-actions button.danger { flex: none; background: var(--fill); color: var(--danger); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(20px + var(--safe-bottom)); transform: translateX(-50%); z-index: 50;
+    max-width: calc(100% - 32px); padding: 10px 16px; border-radius: 999px; text-align: center;
+    background: var(--fg); color: var(--bg); font-size: 15px; font-weight: 600; box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
   }
@@ -374,10 +398,17 @@
               </button>
               <button class="row action danger" id="resetBtn">
                 <span class="ic red" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4.5 6h11M8 6V4.5h4V6M6.2 6l.7 9.5h6.2l.7-9.5"/></svg></span>
-                <span class="label"><span class="t">Hacer corte (vaciar)</span></span>
+                <span class="label"><span class="t">Hacer corte (guardar y vaciar)</span></span>
               </button>
             </div>
-            <p class="sec-foot"><b>Bitácora:</b> copia las filas, abre <b>Cortes/venta del dia.xlsx</b> y pega en la primera celda vacía de la columna <b>Fecha</b>. Al terminar, usa <b>Hacer corte</b> para empezar el día siguiente en limpio.</p>
+            <p class="sec-foot"><b>Bitácora:</b> copia las filas, abre <b>Cortes/venta del dia.xlsx</b> y pega en la primera celda vacía de la columna <b>Fecha</b>. Al terminar, usa <b>Hacer corte</b>: el día se guarda en el historial y la lista queda en limpio.</p>
+          </section>
+
+          <!-- Historial -->
+          <section class="sec">
+            <div class="sec-head"><span>Historial de cortes</span><span id="histCount"></span></div>
+            <div class="group" id="hist"></div>
+            <p class="sec-foot"><b>Enviar a visualización</b> manda por WhatsApp un link con los números del día, sin nombres de meseros, para la app de visualización.</p>
           </section>
 
           <!-- Porcentajes -->
@@ -398,6 +429,7 @@
           <button class="cancel" id="sheetCancel">Cancelar</button>
         </div>
       </div>
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script>
   var MXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2 });
   function money(n){ return MXN.format(isFinite(n) ? n : 0); }
@@ -682,15 +714,140 @@
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !sheet.hidden) closeSheet(); });
   sheetOk.addEventListener('click', function(){ var fn = sheetAction; closeSheet(); if(fn) fn(); });
 
+  var toastEl = document.getElementById('toast'), toastT = null;
+  function toast(msg){
+    toastEl.textContent = msg; toastEl.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 2800);
+  }
+
   document.getElementById('resetBtn').addEventListener('click', function(){
+    var hay = meserosConVenta().length > 0;
     askSheet({
       title: '¿Hacer corte del día?',
-      msg: 'Se borrarán los meseros y ventas capturados. Los porcentajes se quedan igual.',
+      msg: hay ? 'El día se guarda en el historial y se vacían los meseros y ventas. Los porcentajes se quedan igual.'
+               : 'No hay ventas capturadas, así que no se guarda nada; solo se vacía la lista.',
       ok: 'Hacer corte', destroy: true,
       onOk: function(){
+        var c = guardarCorte();
         meseros = [{ name:'', venta:'' }];
         save(LS_MESEROS, meseros);
         renderMeseros(); recalc();
+        if(c) askSheet({
+          title: 'Corte guardado',
+          msg: 'Quedó en el historial de este teléfono. ¿Lo mandas a la app de visualización?',
+          ok: 'Enviar por WhatsApp', cancel: 'Ahora no',
+          onOk: function(){ enviarCorte(c); }
+        });
+      }
+    });
+  });
+
+  // ---- Historial de cortes ----
+  var LS_CORTES = 'sdd_cortes_v1';
+  var VISTA = 'visualizacion-reparto-de-punto/';
+  var cortes = load(LS_CORTES, []);
+  if(!Array.isArray(cortes)) cortes = [];
+
+  function isoDia(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  // El bar cierra de madrugada: un corte antes de las 8 a. m. cuenta para la jornada del día anterior.
+  function jornadaDe(d){ var x = new Date(d); if(x.getHours() < 8) x.setDate(x.getDate() - 1); return isoDia(x); }
+  function fechaJornada(iso){
+    var p = iso.split('-');
+    var f = new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long' });
+    return f.charAt(0).toUpperCase() + f.slice(1);
+  }
+  function totalesCorte(c){
+    var venta = c.meseros.reduce(function(s, m){ return s + m.venta; }, 0);
+    var pct = c.areas.reduce(function(s, a){ return s + a.pct; }, 0);
+    return { venta: venta, pct: pct, punto: venta*pct/100 };
+  }
+
+  function guardarCorte(){
+    var lista = meserosConVenta();
+    if(!lista.length) return null;
+    var ahora = new Date();
+    var c = {
+      id: ahora.getTime(), jornada: jornadaDe(ahora), hora: ahora.toISOString(),
+      areas: areas.map(function(a){ return { name: a.name, pct: a.pct }; }),
+      meseros: lista.map(function(x){ return { name: x.name, venta: xlR2(x.venta) }; })
+    };
+    cortes.unshift(c);
+    save(LS_CORTES, cortes);
+    renderHist();
+    return c;
+  }
+
+  // Link para la app de visualización: este corte y hasta 6 anteriores, sin nombres de meseros.
+  // Va después de # para que los números no viajen al servidor.
+  function linkVista(c){
+    var otros = cortes.filter(function(x){ return x.id !== c.id; }).slice(0, 6);
+    var payload = { v: 1, c: [c].concat(otros).map(function(x){
+      return {
+        id: x.id, j: x.jornada,
+        a: x.areas.map(function(a){ return [a.name, a.pct]; }),
+        m: x.meseros.map(function(m){ return m.venta; }).sort(function(a, b){ return b - a; })
+      };
+    }) };
+    var bytes = new TextEncoder().encode(JSON.stringify(payload)), bin = '';
+    for(var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    var data = btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    return new URL(VISTA, location.href).href + '#c=' + data;
+  }
+
+  function enviarCorte(c){
+    var t = totalesCorte(c);
+    var texto = 'Corte de punto · ' + fechaJornada(c.jornada) + '\n' +
+      'Venta ' + money(t.venta) + ' · Punto ' + money(t.punto) + '\n' +
+      'Ver el desglose: ' + linkVista(c);
+    var touch = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+    if(touch && navigator.share){ navigator.share({ text: texto }).catch(function(){}); return; }
+    copiar(texto).then(function(){ toast('Link copiado. Pégalo en WhatsApp.'); }, function(){ toast('No se pudo copiar el link'); });
+  }
+
+  var histEl = document.getElementById('hist');
+  function renderHist(){
+    var n = cortes.length;
+    document.getElementById('histCount').textContent = n ? n + (n === 1 ? ' corte' : ' cortes') : '';
+    if(!n){
+      histEl.innerHTML = '<div class="row"><span class="empty">Aún no hay cortes guardados. Al hacer corte, el día queda aquí.</span></div>';
+      return;
+    }
+    histEl.innerHTML = cortes.map(function(c){
+      var t = totalesCorte(c), nm = c.meseros.length;
+      var hora = new Date(c.hora).toLocaleTimeString('es-MX', { hour:'numeric', minute:'2-digit' });
+      return '<details class="hist" data-id="'+c.id+'">'+
+        '<summary class="row"><span class="label"><span>'+fechaJornada(c.jornada)+'</span>'+
+          '<span class="sub">'+nm+(nm === 1 ? ' mesero' : ' meseros')+' · corte '+hora+'</span></span>'+
+          '<span class="val strong">'+money(t.venta)+'</span><span class="chev"></span></summary>'+
+        '<div class="hist-body">'+
+          '<div class="row"><span class="label">Punto total <span class="sub">('+(Math.round(t.pct*100)/100)+'%)</span></span><span class="val strong">'+money(t.punto)+'</span></div>'+
+          '<div class="row hist-k">Por área</div>'+
+          c.areas.map(function(a, i){
+            return '<div class="row b-item"><span class="label"><span class="'+dotClass(i)+'"></span>'+escapeAttr(a.name)+' <span class="bp">'+a.pct+'%</span></span><span class="val">'+money(t.venta*a.pct/100)+'</span></div>';
+          }).join('')+
+          '<div class="row hist-k">Por mesero</div>'+
+          c.meseros.map(function(m){
+            return '<div class="row b-item"><span class="label">'+escapeAttr(m.name)+'</span><span class="val">'+money(m.venta)+'</span></div>';
+          }).join('')+
+          '<div class="hist-actions"><button data-send>Enviar a visualización</button><button class="danger" data-delc>Borrar</button></div>'+
+        '</div></details>';
+    }).join('');
+  }
+  histEl.addEventListener('click', function(e){
+    var b = e.target.closest('button');
+    if(!b) return;
+    var id = +b.closest('details.hist').getAttribute('data-id');
+    var c = cortes.find(function(x){ return x.id === id; });
+    if(!c) return;
+    if(b.hasAttribute('data-send')) return enviarCorte(c);
+    askSheet({
+      title: '¿Borrar el corte del ' + fechaJornada(c.jornada).toLowerCase() + '?',
+      msg: 'Se quitará del historial de este teléfono. No se puede deshacer.',
+      ok: 'Borrar corte', destroy: true,
+      onOk: function(){
+        cortes = cortes.filter(function(x){ return x.id !== id; });
+        save(LS_CORTES, cortes);
+        renderHist();
       }
     });
   });
@@ -747,22 +904,22 @@
     return rows.join('\n');
   }
 
+  function copiar(texto){
+    var viejo = function(){
+      var ta = document.createElement('textarea');
+      ta.value = texto; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = document.execCommand('copy'); document.body.removeChild(ta);
+      if(!ok) throw new Error('copy');
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(texto).catch(viejo);
+    return new Promise(function(resolve){ viejo(); resolve(); });
+  }
   function copyToClipboard(texto, btn, okLabel){
     var lbl = btn.querySelector('.t') || btn.querySelector('.label') || btn;
     var prev = lbl.textContent;
     var flash = function(msg, ms){ lbl.textContent = msg; setTimeout(function(){ lbl.textContent = prev; }, ms||1600); };
-    var done = function(){ flash(okLabel || 'Copiado'); };
-    var fail = function(){
-      try {
-        var ta = document.createElement('textarea');
-        ta.value = texto; ta.style.position = 'fixed'; ta.style.opacity = '0';
-        document.body.appendChild(ta); ta.focus(); ta.select();
-        document.execCommand('copy'); document.body.removeChild(ta); done();
-      } catch(e){ flash('No se pudo copiar', 2000); }
-    };
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(texto).then(done, fail);
-    } else { fail(); }
+    copiar(texto).then(function(){ flash(okLabel || 'Copiado'); }, function(){ flash('No se pudo copiar', 2000); });
   }
   document.getElementById('copyBtn').addEventListener('click', function(){ copyToClipboard(buildResumen(), this, 'Resumen copiado'); });
   document.getElementById('excelBtn').addEventListener('click', function(){ copyToClipboard(buildExcelTSV(), this, 'Listo, pega en Excel'); });
@@ -1132,6 +1289,7 @@
   renderPcts();
   renderMeseros();
   recalc();
+  renderHist();
 
   // Guarda la app en el teléfono para que abra aunque no haya señal.
   if('serviceWorker' in navigator && location.protocol === 'https:'){
